@@ -4,18 +4,18 @@ const router = express.Router();
 
 
 // GET /programs
-router.get('/programs', programsController.getAllPrograms);
+router.get('/', programsController.getAllPrograms);
 
 // GET /programs/:id
-router.get('/programs/:id', programsController.getProgramById);
+router.get('/:id', programsController.getProgramById);
 
 // POST /programs
-router.post('/programs', programsController.createProgram);
+router.post('/', programsController.createProgram);
 
 // PUT /programs/:id
-router.put('/programs/:id', programsController.updateProgram);
+router.put('/:id', programsController.updateProgram);
 
 // DELETE /programs/:id
-router.delete('/programs/:id', programsController.deleteProgram);
+router.delete('/:id', programsController.deleteProgram);
 
 module.exports = router;

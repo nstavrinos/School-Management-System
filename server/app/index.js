@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require("cors");
 const axios  = require("axios");
 require('dotenv').config();
- const coursesRoutes = require('./routes/coursesRoutes');
+const coursesRoutes = require('./routes/coursesRoutes');
 const gradesRoutes = require('./routes/gradesRoutes');
 const programsRoutes = require('./routes/programsRoutes');
 const studentsRoutes = require('./routes/studentsRoutes');
@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
     res.send('WELCOME TO THE SCHOOL MANAGEMENT SYSTEM API!');
     })
 
- app.use('/courses', coursesRoutes);
+app.use('/courses', coursesRoutes);
 app.use('/grades', gradesRoutes);
 app.use('/programs', programsRoutes);
 app.use('/students', studentsRoutes);

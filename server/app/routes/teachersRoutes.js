@@ -4,18 +4,18 @@ const teachersController = require('../controllers/teachersControllers');
 const router = express.Router();
 
 // GET all teachers
-router.get('/teachers', teachersController.getAllTeachers);
+router.get('/', teachersController.getAllTeachers);
 
 // GET a specific teacher by ID
-router.get('/teachers/:id', teachersController.getTeacherById);
+router.get('/:id', teachersController.getTeacherById);
 
 // POST a new teacher
-router.post('/teachers', teachersController.createTeacher);
+router.post('/', teachersController.createTeacher);
 
 // PUT/update a teacher by ID
-router.put('/teachers/:id', teachersController.updateTeacher);
+router.put('/:id', teachersController.updateTeacher);
 
 // DELETE a teacher by ID
-router.delete('/teachers/:id', teachersController.deleteTeacher);
+router.delete('/:id', teachersController.deleteTeacher);
 
 module.exports = router;

@@ -2,17 +2,17 @@ const mongoose = require('mongoose');
 
 const programData = new mongoose.Schema({
     program_name: {type: String, required: true},
-    duration: {type: Number, required: true},
-    es: {type: String},
-    begin: {type: String, required: true},
-    end: {type: String, required: true},
+    begin: {type: Date, required: true},
+    end: {type: Date, required: true},
     courses:[{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Course'
+        ref: 'Course',
+        default: []
     }],
     students:[{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student'
+        ref: 'Student',
+        default: []
     }]
     
 });

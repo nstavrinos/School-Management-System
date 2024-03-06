@@ -1,53 +1,110 @@
 import React from 'react';
 import { useForm } from 'react-hook-form'; 
+import { useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-function CreatePage() {
-    const { values, handleChange, handleSubmit } = useForm();
+function CreatePage({setIsOpen}) {
+    const {register,handleSubmit,setError,formState: { errors, isSubmitting },} = useForm();
+    const queryClient = useQueryClient();
+
+    const {mutateAsync, isPending} = useMutation({
+        mutationFn: async (data) => {
+           
+        const response = await fetch('http://localhost:5000/programs', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.message);
+        }
+
+        return await response.json();
+        },
+        onSuccess: () => {
+            setIsOpen(false);
+            queryClient.invalidateQueries(["programs"]);
+        },
+        onError: (error) => {
+            console.error(error);
+        }
+    });
+    
+    const onSubmit = async (data) => {
+        console.log(data);
+        try {
+           const response = await mutateAsync(data);
+        console.log(response);
+        } catch (error) {   
+            console.error(error);
+        }
+    };
+  
+  
 
 
 
     return (
-        <div className="flex justify-center items-center h-screen">
-            <form
-                className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full sm:w-1/2 md:w-1/3 lg:w-1/4"
-                onSubmit={handleSubmit}
-            >
+            <form  onSubmit={handleSubmit(onSubmit)}>
+                <h1 className="text-3xl font-bold mb-8 text-center text-indigo-900">Create a new program</h1>
                 <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-                        Name
+                    <label className="block text-indigo-900 text-sm font-bold mb-2" htmlFor="program_name">
+                        Name of the program
                     </label>
                     <input
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="name"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-indigo-900 leading-tight focus:outline-none focus:shadow-outline"
+                        id="program_name"
                         type="text"
-                        placeholder="Enter your name"
-                        name="name"
-                        value={values.name || ''}
-                        onChange={handleChange} />
+                        placeholder="Enter the name of the program"
+                        name="program_name"
+                        {...register('program_name', { required: true, maxLength: 80})}
+                    />
                 </div>
+                {errors.name && <p>Name is required.</p>}
                 <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                        Email
+                    <label className="block text-indigo-900 text-sm font-bold mb-2" htmlFor="begin">
+                        Begin date of the program
                     </label>
                     <input
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="email"
-                        type="email"
-                        placeholder="Enter your email"
-                        name="email"
-                        value={values.email || ''}
-                        onChange={handleChange} />
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-indigo-900 leading-tight focus:outline-none focus:shadow-outline"
+                        id="begin"
+                        type="date"
+                        placeholder="Enter the begin date"
+                        name="begin"
+                        {...register('begin', { required: true, maxLength: 30})}
+                    />
                 </div>
-                <div className="flex items-center justify-between">
+                {errors.begin && <p>Begin date is required.</p>}
+                <div className="mb-4">
+                    <label className="block text-indigo-900 text-sm font-bold mb-2" htmlFor="end">
+                        End date of the program
+                    </label>
+                    <input
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-indigo-900 leading-tight focus:outline-none focus:shadow-outline"
+                        id="end"
+                        type="date"
+                        placeholder="Enter the end date"
+                        name="end"
+                        {...register('end', { required: true, maxLength: 30})}
+                    />
+                </div>
+                {errors.end && <p>End date is required.</p>}
+
+                <div className="flex items-center justify-center">
                     <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        className="bg-indigo-600 hover:bg-indigo-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         type="submit"
+                        disabled={isSubmitting}
                     >
-                        Submit
+                        {isSubmitting? "Creating..." : "Submit" }
                     </button>
                 </div>
             </form>
-        </div>
+     
     );
 }
 

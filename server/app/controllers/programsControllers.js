@@ -35,16 +35,15 @@ const getProgramById = async (req, res) => {
 // Example async controller for creating a new program
 const createProgram = async (req, res) => {
     try {
-        // Extract the necessary data from the request body
-        const { name, description } = req.body;
-
+        console.log(req.body);
         // Logic to create a new program in the database
-        const newProgram = await Program.create({ name, description });
-
+        const newProgram = await Program.create(req.body);
+       
         // Return the newly created program as a response
         res.status(201).json(newProgram);
     } catch (error) {
         // Handle any errors that occur during the process
+        console.log(error);
         res.status(500).json({ error: 'Internal server error' });
     }
 };
