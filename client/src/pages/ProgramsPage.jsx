@@ -1,9 +1,10 @@
 import React from 'react';
-import {createPortal} from 'react-dom';
+import {createPortal } from 'react-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import  Modal  from '../modals/Modal';
 import EditPage from './EditPage';
+import { Link } from 'react-router-dom';
 
 // const fetchPrograms = async () => {
 //     // Fetch programms data from your API
@@ -85,8 +86,8 @@ function ProgramsPage () {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {data.map((program) => (
-                    <div key={program._id} className="p-4 bg-white shadow">
-                        <h2 className="text-xl font-bold text-indigo-900">{program.program_name}</h2>
+                    <div key={program._id} className="p-4 mt-4 ml-4 bg-white shadow" >
+                        <Link to={`/programs/${program._id}`} className="text-xl font-bold text-indigo-900">{program.program_name}</Link>
                         <p className="text-gray-700 mt-2">"Started on :" {program.begin.slice(0,10)}</p>
                         <p className="text-gray-700 mt-2">"Ended on   :" {program.end.slice(0,10)}</p>
 

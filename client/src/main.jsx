@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import ProgramsPage from './pages/ProgramsPage.jsx'
+import ProgramPage from './pages/ProgramPage.jsx'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -19,8 +20,11 @@ const BrowserRouter = createBrowserRouter([
                 element: <HomePage />,
                 errorElement: <NotFoundPage />
               },
-              { path: '/programms', 
+              { path: '/programs', 
                 element: <ProgramsPage />,
+              },
+              { path: '/programs/:id', 
+                element: <ProgramPage />,
               },
             ]
   }
