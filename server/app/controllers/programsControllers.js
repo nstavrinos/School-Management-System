@@ -6,6 +6,7 @@ const getAllPrograms = async (req, res) => {
     try {
         // Logic to fetch all programs from the database
         const programs = await Program.find();
+        console.log(programs);
 
         // Return the programs as a response
         res.status(200).json(programs);
@@ -40,7 +41,7 @@ const createProgram = async (req, res) => {
         const newProgram = await Program.create(req.body);
        
         // Return the newly created program as a response
-        res.status(201).json(newProgram);
+        res.status(201).json({message: 'Program created successfully',newProgram});
     } catch (error) {
         // Handle any errors that occur during the process
         console.log(error);
@@ -53,13 +54,12 @@ const updateProgram = async (req, res) => {
     try {
         // Extract the necessary data from the request body and parameters
         const { id } = req.params;
-        const { name, description } = req.body;
 
         // Logic to update the program in the database
-        const updatedProgram = await Program.findByIdAndUpdate(id, { name, description }, { new: true });
+        const updatedProgram = await Program.findByIdAndUpdate(id, req.body, { new: true });
 
         // Return the updated program as a response
-        res.status(200).json(updatedProgram);
+        res.status(200).json({message: 'Program updated successfully', updatedProgram});
     } catch (error) {
         // Handle any errors that occur during the process
         res.status(500).json({ error: 'Internal server error' });
@@ -69,8 +69,10 @@ const updateProgram = async (req, res) => {
 // Example async controller for deleting a program
 const deleteProgram = async (req, res) => {
     try {
-        // Extract the necessary data from the request parameters
+        // Extract the necessary data from the Url parameters
         const { id } = req.params;
+        console.log(id);
+
 
         // Logic to delete the program from the database
         await Program.findByIdAndDelete(id);

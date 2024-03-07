@@ -2,15 +2,19 @@ import React from 'react';
 import { useForm } from 'react-hook-form'; 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-function CreatePage({setIsOpen}) {
-    const {register,handleSubmit,setError,formState: { errors, isSubmitting },} = useForm();
+function EditPage({setIsOpen, program}) {
+    const {register,handleSubmit,setError,formState: { errors, isSubmitting },} = useForm(  {defaultValues: {
+        program_name: program.program_name,
+        begin: program.begin.slice(0,10),
+        end: program.end.slice(0,10)
+      }});
     const queryClient = useQueryClient();
 
     const {mutateAsync, isPending} = useMutation({
         mutationFn: async (data) => {
            
-        const response = await fetch('http://localhost:5000/programs', {
-            method: 'POST',
+        const response = await fetch(`http://localhost:5000/programs/${program._id}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -49,7 +53,7 @@ function CreatePage({setIsOpen}) {
 
     return (
             <form  onSubmit={handleSubmit(onSubmit)}>
-                <h1 className="text-3xl font-bold mb-8 text-center text-indigo-900">Create a new program</h1>
+                <h1 className="text-3xl font-bold mb-8 text-center text-indigo-900">Edit the program</h1>
                 <div className="mb-4">
                     <label className="block text-indigo-900 text-sm font-bold mb-2" htmlFor="program_name">
                         Name of the program
@@ -58,7 +62,6 @@ function CreatePage({setIsOpen}) {
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-indigo-900 leading-tight focus:outline-none focus:shadow-outline"
                         id="program_name"
                         type="text"
-                        placeholder="Enter the name of the program"
                         name="program_name"
                         {...register('program_name', { required: true, maxLength: 80})}
                     />
@@ -72,7 +75,6 @@ function CreatePage({setIsOpen}) {
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-indigo-900 leading-tight focus:outline-none focus:shadow-outline"
                         id="begin"
                         type="date"
-                        placeholder="Enter the begin date"
                         name="begin"
                         {...register('begin', { required: true, maxLength: 30})}
                     />
@@ -86,7 +88,6 @@ function CreatePage({setIsOpen}) {
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-indigo-900 leading-tight focus:outline-none focus:shadow-outline"
                         id="end"
                         type="date"
-                        placeholder="Enter the end date"
                         name="end"
                         {...register('end', { required: true, maxLength: 30})}
                     />
@@ -99,7 +100,7 @@ function CreatePage({setIsOpen}) {
                         type="submit"
                         disabled={isSubmitting}
                     >
-                        {isSubmitting? "Creating..." : "Create" }
+                        {isSubmitting? "Editing..." : "Edit" }
                     </button>
                 </div>
             </form>
@@ -107,4 +108,4 @@ function CreatePage({setIsOpen}) {
     );
 }
 
-export default CreatePage;
+export default EditPage;
