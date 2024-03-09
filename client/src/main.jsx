@@ -2,35 +2,73 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import NotFoundPage from './pages/NotFoundPage.jsx'
 import HomePage from './pages/HomePage.jsx'
-import ProgramsPage from './pages/ProgramsPage.jsx'
+//import ProgramsPage from './pages/ProgramsPage.jsx'
+import ProgramsList from './components/ProgramsList.jsx'
 import ProgramPage from './pages/ProgramPage.jsx'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import NavbarWrapper from './App.jsx'
+import App from './App.jsx'
+import CreateProgam from './components/CreateProgram.jsx'
 
 
 const BrowserRouter = createBrowserRouter([
   {
     path: '/',
-    element: <NavbarWrapper />,
+    element: <App />,
     errorElement: <NotFoundPage />,
     children: [
               { path: '/', 
                 element: <HomePage />,
-                errorElement: <NotFoundPage />
               },
               { path: '/programs', 
-                element: <ProgramsPage />,
+                element: <ProgramsList/>,
               },
               { path: '/programs/:id', 
-                element: <ProgramPage />,
+                element: <CreateProgam />,
               },
             ]
   }
 
 
 ]);
+
+
+// const BrowserRouter = createBrowserRouter([
+//   {
+//     path: "/",
+//     element: <App />,
+//     errorElement: <NotFoundPage />,
+//     children: [
+//       {
+//         path: "/",
+//         element: <HomePage />,
+//       },
+//     ],
+//   },
+//   {
+//     path: "/programs",
+//     element: <App />,
+//     children: [
+//       {
+//         path: "/programs",
+//         element: <ProgramsList />,
+//       },
+//     ],
+//   },
+//   {
+//     path: "/programs/:id",
+//     element: <App />,
+//     children: [
+//       {
+//         path: "/programs/:id",
+//         element: <CreateProgam />,
+//       },
+//     ],
+//   },
+
+// ]);
+
 
 const queryClient = new QueryClient()
 

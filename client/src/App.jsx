@@ -1,14 +1,13 @@
-import Navbar from './components/Navbar.jsx'
+import Navbar from './components/Navbar2.jsx'
 import {Outlet} from "react-router-dom";
 
-export default function NavbarWrapper ()  {
+export default function App ()  {
     return (   
-      <div>
+      <div className="w-full">
         <Navbar/>
         <Outlet/>
       </div>
     );
-
 }
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import  Modal  from '../modals/Modal';
 import CreatePage from '../pages/CreatePage';
 import {createPortal} from 'react-dom';
@@ -36,9 +36,9 @@ const Navbar = () => {
 
             <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                 <div className="text-sm lg:flex-grow">
-                    <Link to="/programs" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
+                    <NavLink to="/programs" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
                         Programs
-                    </Link>
+                    </NavLink>
                     <a href="#responsive-header" className="block mt-4 lg:inline-block lg:mt-0 text-teal-200 hover:text-white mr-4">
                         About
                     </a>
