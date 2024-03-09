@@ -1,5 +1,5 @@
 // Import any necessary modules or models
-const Grade = require('../models/Grade');
+const Grade = require('../models/grade');
 
 // Example controller for getting all grades
 const getAllGrades = async (req, res) => {

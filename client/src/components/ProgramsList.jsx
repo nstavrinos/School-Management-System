@@ -2,6 +2,7 @@ import React from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Program from './Program';
 import { getAll, remove } from '../api/programsAPI';
+import { Link } from 'react-router-dom';
 
 export default function ProgramsList() {
   
@@ -65,7 +66,17 @@ export default function ProgramsList() {
     // This following section will display the table with the records of individuals.
     return (
       <>
+      <div className="py-2 mx-auto flex items-center justify-between flex-wrap p-6">
         <h3 className="text-lg font-semibold p-4">School Programs</h3>
+        <button  className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded justify-end">
+        <Link
+              to="/programs/create"
+              className= "hover:text-pink-500"
+            >
+              Create
+        </Link>
+            </button>
+</div>
         <div className="border rounded-lg overflow-hidden">
           <div className="relative w-full overflow-auto">
             <table className="w-full caption-bottom text-sm">

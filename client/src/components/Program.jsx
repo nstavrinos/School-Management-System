@@ -1,24 +1,24 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Program  (props) {
+export default function Program  ({program, deleteProgram}) {
 
     return (
     <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
       <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-        {props.program.program_name}
+        {program.program_name}
       </td>
       <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-        {props.program.begin.slice(0, 10)}
+        {program.begin.slice(0, 10)}
       </td>
       <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-        {props.program.end.slice(0, 10)}
+        {program.end.slice(0, 10)}
       </td>
       <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
         <div className="flex gap-2">
           <Link
             className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 h-9 rounded-md px-3"
-            to={`/programs/${props.program._id}`}
+            to={`/programs/${program._id}`}
           >
             Edit
           </Link>
@@ -27,7 +27,7 @@ export default function Program  (props) {
             color="red"
             type="button"
             onClick={() => {
-              props.deleteProgram(props.program._id);
+              deleteProgram(program._id);
             }}
           >
             Delete

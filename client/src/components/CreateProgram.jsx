@@ -1,41 +1,94 @@
 import { useParams, useNavigate } from "react-router-dom";
 import {  useForm } from 'react-hook-form'; 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {  update, create } from '../api/programsAPI';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
+import {  update, create, getById } from '../api/programsAPI';
+import { useEffect,useState } from "react";
 
-export default function Record() {
-  const {register,handleSubmit,setValue,setError,formState: { errors, isSubmitting },} = useForm(  {defaultValues: {
-        program_name: "",
-        begin:  new Date().toISOString().slice(0,10),
-        end: new Date().toISOString().slice(0,10)
-  }});
+export default function CreateProgram() {
+  // const {register,handleSubmit,setValue,setError,formState: { errors, isSubmitting },} = useForm(  {defaultValues: {
+  //       program_name: "",
+  //       begin:  new Date().toISOString().slice(0,10),
+  //       end: new Date().toISOString().slice(0,10)
+  // }});
 
   const params = useParams();
   const navigateTo = useNavigate();
   const queryClient = useQueryClient();
-  const id = params.id?.toString() || undefined;
+  const [program, setProgram] = useState({
+      program_name: "",
+      begin:  new Date().toISOString().slice(0,10),
+      end: new Date().toISOString().slice(0,10)
+});
+const id = params.id?.toString() || undefined;
 
-  console.log("hello",id);
+const {register,handleSubmit,setValue,setError,formState: { errors, isSubmitting },} = useForm(  {defaultValues: program});
+if(id){
+  const {data: programData} = useQuery({
+    queryKey: ["programs",id],
+    queryFn: () =>  getById("programs",id)
+  });
+  console.log("data",programData);
 
-  if(id){
-    const data = queryClient.getQueryData("programs");
-    const program = data.find((program) => program._id === id);
+  if (!programData) {
+    console.warn(`Program with id ${id} not found. Redirecting to /programs.`);
+    navigateTo('/programs');
+  }else{
+    setValue('program_name', programData?.program_name);
+    setValue('begin', programData.begin?.slice(0,10));
+    setValue('end', programData.end?.slice(0,10));
 
-    if (!program) {
-        console.warn(`Program with id ${id} not found`);
-        navigateTo('/programs');
-    }
-    else{
-        setValue('program_name', program.program_name);
-        setValue('begin', program.begin.slice(0,10));
-        setValue('end', program.end.slice(0,10));
-    }
   }
 
+
+
+}
+
+
+  // useEffect(() => {
+
+    
+
+  //   if(!id){
+  //     return;
+  //   }
+
+  //     function getProgram () {
+  //     try {
+        
+
+  //       // if (!programData) {
+  //       //   console.warn(`Program with id ${id} not found. Redirecting to /programs.`);
+  //       //   navigateTo('/programs');
+  //       // }
+  //       // else{
+  //       //   console.log("hi",programData);
+  //         //setProgram({program_name : programData.program_name, begin: programData.begin?.slice(0,10), end : programData.end?.slice(0,10)});
+
+  //           // setValue('program_name', program.program_name);
+  //           // setValue('begin', program.begin?.slice(0,10));
+  //           // setValue('end', program.end?.slice(0,10));
+  //       }
+
+
+
+
+  //     } catch (error) {
+  //       console.error(error);
+  //     }}
+
+  //     getProgram();
+  //     //const program = programs?.find((program) => program._id === params.id);
+  //  // const program = queryClient.getQueryData("programs")?.filter((program) => program._id !== id);
+  
+  // }, [params.id, queryClient, navigateTo]);
+
+  
+ 
+
   const {mutateAsync, isPending} = useMutation({
-    mutationFn: (data) =>  {id? update("programs", id, data) : create("programs", data)},
+    mutationFn: (data) =>  {return (id? update("programs", id, data): create("programs", data))},
     onSuccess: () => {
-        queryClient.invalidateQueries(["programs"]);
+        queryClient.invalidateQueries(["programs",id]);
     },
     onError: (error) => {
         console.error(error);
@@ -47,6 +100,10 @@ export default function Record() {
     try {
         const response = await mutateAsync(data);
         console.log(response.message);
+        if(id === undefined){
+          navigateTo('/programs');
+        }
+        
     } catch (error) {   
         console.error(error);
     }
@@ -55,7 +112,7 @@ export default function Record() {
   // This following section will display the form that takes the input from the user.
   return (
     <>
-      <h3 className="text-lg font-semibold p-4">Create/Update Employee Record</h3>
+      <h3 className="text-lg font-semibold p-4">{params.id? "Update":"Create"} Program</h3>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="border rounded-lg overflow-hidden p-4"

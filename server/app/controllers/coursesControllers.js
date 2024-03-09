@@ -1,5 +1,5 @@
 // Import any necessary modules or models
-const Course = require('../models/Course');
+const Course = require('../models/course');
 
 // Example async controller for getting all courses
 const getAllCourses = async (req, res) => {

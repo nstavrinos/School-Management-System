@@ -1,5 +1,5 @@
 // Import any necessary modules or models
-const Student = require('../models/Student');
+const Student = require('../models/student');
 
 // Example controller for getting all students
 const getAllStudents = async (req, res) => {
@@ -34,11 +34,9 @@ const getStudentById = async (req, res) => {
 // Example controller for creating a new student
 const createStudent = async (req, res) => {
     try {
-        // Extract the necessary data from the request body
-        const { name, age, grade } = req.body;
 
         // Logic to create a new student in the database
-        const newStudent = await Student.create({ name, age, grade });
+        const newStudent = await Student.create(req.body);
 
         // Return the newly created student as a response
         res.status(201).json(newStudent);
@@ -52,13 +50,12 @@ const createStudent = async (req, res) => {
 const updateStudent = async (req, res) => {
     try {
         // Extract the necessary data from the request body
-        const { name, age, grade } = req.body;
         const studentId = req.params.id;
 
         // Logic to update the student in the database
         const updatedStudent = await Student.findByIdAndUpdate(
             studentId,
-            { name, age, grade },
+            req.body,
             { new: true }
         );
 

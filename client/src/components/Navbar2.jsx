@@ -18,6 +18,30 @@ export default function Navbar() {
             >
               Programs
             </NavLink>
+            <NavLink
+              to="/teachers"
+              className={({ isActive }) => (isActive ? activeLink : "hover:text-pink-500")}
+            >
+              Teachers
+            </NavLink>
+            <NavLink
+              to="/students"
+              className={({ isActive }) => (isActive ? activeLink : "hover:text-pink-500")}
+            >
+              Students
+            </NavLink>
+            <NavLink
+              to="/courses"
+              className={({ isActive }) => (isActive ? activeLink : "hover:text-pink-500")}
+            >
+              Courses
+            </NavLink>
+            <NavLink
+              to="/search"
+              className={({ isActive }) => (isActive ? activeLink : "hover:text-pink-500")}
+            >
+             Search
+            </NavLink>
           </div>
         </nav>
       </>

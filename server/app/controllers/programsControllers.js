@@ -1,12 +1,11 @@
 // Import any necessary modules or models
-const Program = require('../models/Program');
+const Program = require('../models/program');
 
 // Example async controller for getting all programs
 const getAllPrograms = async (req, res) => {
     try {
         // Logic to fetch all programs from the database
         const programs = await Program.find();
-        console.log(programs);
 
         // Return the programs as a response
         res.status(200).json(programs);
@@ -36,7 +35,7 @@ const getProgramById = async (req, res) => {
 // Example async controller for creating a new program
 const createProgram = async (req, res) => {
     try {
-        console.log(req.body);
+
         // Logic to create a new program in the database
         const newProgram = await Program.create(req.body);
        
@@ -71,8 +70,6 @@ const deleteProgram = async (req, res) => {
     try {
         // Extract the necessary data from the Url parameters
         const { id } = req.params;
-        console.log(id);
-
 
         // Logic to delete the program from the database
         await Program.findByIdAndDelete(id);
