@@ -12,8 +12,8 @@ router.get('/:id', programsController.getProgramById);
 // POST /programs
 router.post('/', programsController.createProgram);
 
-// PUT /programs/:id
-router.put('/:id', programsController.updateProgram);
+// PATCH /programs/:id
+router.patch('/:id', programsController.updateProgram);
 
 // DELETE /programs/:id
 router.delete('/:id', programsController.deleteProgram);

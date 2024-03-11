@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage.jsx'
 import ProgramsList from './components/ProgramsList.jsx'
 import StudentsList from './components/StudentsList.jsx'
 
-import ProgramPage from './pages/ProgramPage.jsx'
+import StudentsPage from './pages/StudentsPage.jsx'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -33,8 +33,11 @@ const BrowserRouter = createBrowserRouter([
               { path: '/programs/create', 
               element: <CreateProgam />,
               },
+              { path: '/programs/addNewStudent/:id', 
+                element: <CreateStudent />,
+              },
               { path: '/students',
-              element: <StudentsList/>
+              element: <StudentsPage/>
             },
               { path: '/students/:id', 
               element: <CreateStudent />,

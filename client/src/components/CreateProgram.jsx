@@ -1,8 +1,9 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {  useForm } from 'react-hook-form'; 
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import {  update, create, getById } from '../api/programsAPI';
 import { useEffect,useState } from "react";
+import StudentsList from "./StudentsList";
 
 export default function CreateProgram() {
   // const {register,handleSubmit,setValue,setError,formState: { errors, isSubmitting },} = useForm(  {defaultValues: {
@@ -17,73 +18,64 @@ export default function CreateProgram() {
   const [program, setProgram] = useState({
       program_name: "",
       begin:  new Date().toISOString().slice(0,10),
-      end: new Date().toISOString().slice(0,10)
+      end: new Date().toISOString().slice(0,10),
+      students: []
 });
 const id = params.id?.toString() || undefined;
 
 const {register,handleSubmit,setValue,setError,formState: { errors, isSubmitting },} = useForm(  {defaultValues: program});
+
+useEffect(() => {
+    if(!id){
+        return;
+    }
+}, [id]);
+
+
 if(id){
-  const {data: programData} = useQuery({
-    queryKey: ["programs",id],
-    queryFn: () =>  getById("programs",id)
-  });
-  console.log("data",programData);
 
-  if (!programData) {
-    console.warn(`Program with id ${id} not found. Redirecting to /programs.`);
-    navigateTo('/programs');
-  }else{
-    setValue('program_name', programData?.program_name);
-    setValue('begin', programData.begin?.slice(0,10));
-    setValue('end', programData.end?.slice(0,10));
+    const {data: programData} = useQuery({
+        queryKey: ["programs",id],
+        queryFn: async() =>  {
+            const programData= await getById("programs",id);
+            if (!programData) {
+              console.warn(`Program with id ${id} not found. Redirecting to /programs.`);
+              navigateTo('/programs');
+            }else{
+              setValue('program_name', programData?.program_name);
+              setValue('begin', programData.begin?.slice(0,10));
+              setValue('end', programData.end?.slice(0,10));
+              setProgram(programData);
 
-  }
-
-
+            }
+            return programData;
+        }
+    });
 
 }
 
 
-  // useEffect(() => {
+const {mutateAsync: del} = useMutation({
+  mutationFn: (studentId) =>  remove("students", studentId),
+  onSuccess: () => {
+      queryClient.invalidateQueries(["students"]);
+  },
+  onError: (error) => {
+      console.error(error);
+  }
+});
 
-    
-
-  //   if(!id){
-  //     return;
-  //   }
-
-  //     function getProgram () {
-  //     try {
-        
-
-  //       // if (!programData) {
-  //       //   console.warn(`Program with id ${id} not found. Redirecting to /programs.`);
-  //       //   navigateTo('/programs');
-  //       // }
-  //       // else{
-  //       //   console.log("hi",programData);
-  //         //setProgram({program_name : programData.program_name, begin: programData.begin?.slice(0,10), end : programData.end?.slice(0,10)});
-
-  //           // setValue('program_name', program.program_name);
-  //           // setValue('begin', program.begin?.slice(0,10));
-  //           // setValue('end', program.end?.slice(0,10));
-  //       }
+async function deleteStudent(studentId) {
+  try {
+      const response = await del(studentId);
+      console.log(response.message);
+  } catch (error) {
+      console.error(error);
+  }
+}
 
 
 
-
-  //     } catch (error) {
-  //       console.error(error);
-  //     }}
-
-  //     getProgram();
-  //     //const program = programs?.find((program) => program._id === params.id);
-  //  // const program = queryClient.getQueryData("programs")?.filter((program) => program._id !== id);
-  
-  // }, [params.id, queryClient, navigateTo]);
-
-  
- 
 
   const {mutateAsync, isPending} = useMutation({
     mutationFn: (data) =>  {return (id? update("programs", id, data): create("programs", data))},
@@ -99,7 +91,7 @@ if(id){
         
     try {
         const response = await mutateAsync(data);
-        console.log(response.message);
+        console.log("bbb",response.message);
         if(id === undefined){
           navigateTo('/programs');
         }
@@ -189,15 +181,18 @@ if(id){
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-        <input
+            <input
           type="submit"
-          value="Save Program"
+          value="Save Program Details"
           disabled={isSubmitting}
           className="inline-flex items-center justify-center whitespace-nowrap text-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 hover:text-accent-foreground h-9 rounded-md px-3 cursor-pointer mt-4"
         />
+          </div>
+        </div>
+
       </form>
+     
+      <StudentsList students={program.students} headerInfo="List of Students that are part of this program" buttonLink={`/programs/addNewStudent/${program._id}`} deleteFun={deleteStudent}/>
     </>
   );
 }

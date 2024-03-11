@@ -5,42 +5,17 @@ import { getAll, remove } from '../api/programsAPI';
 import { Link } from 'react-router-dom';
 
 
-export  default  function  StudentsList () {
+export  default  function  StudentsList ({students, headerInfo , buttonLink,deleteStudent}) {
 
-    const queryClient = useQueryClient();
-
-    const { data: students, isLoading, error } = useQuery({
-        queryKey: ["students"],
-        queryFn: () =>  getAll("students")
-    });
-
-    const {mutateAsync, isPending} = useMutation({
-        mutationFn: (studentId) =>  remove("students", studentId),
-        onSuccess: () => {
-            queryClient.invalidateQueries(["students"]);
-        },
-        onError: (error) => {
-            console.error(error);
-        }
-    });
-
-    async function deleteStudent(studentId) {
-        try {
-            const response = await mutateAsync(studentId);
-            console.log(response.message);
-        } catch (error) {
-            console.error(error);
-        }
-    }
 
     function studentsList() {
 
-        if (students.length === 0) {
+        if (students?.length === 0) {
             return <tr><td colSpan="4">No students found</td></tr>;
 
         }
 
-        return students.map((student) => {
+        return students?.map((student) => {
             return (
                 <Student
                     student={student}
@@ -51,17 +26,13 @@ export  default  function  StudentsList () {
         });
     }
 
-    if (isLoading || isPending || students === undefined) {
-        return <div>Loading...</div>;
-    }
-
     return (
         <>
         <div className="py-2 mx-auto flex items-center justify-between flex-wrap p-6">
-          <h3 className="text-lg font-semibold p-4">Students</h3>
+          <h3 className="text-lg font-semibold p-4">{headerInfo}</h3>
           <button  className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded justify-end">
           <Link
-                to="/students/create"
+                to={buttonLink}
                 className= "hover:text-pink-500"
               >
                 Add a New Student

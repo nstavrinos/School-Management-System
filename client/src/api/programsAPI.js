@@ -5,7 +5,6 @@ async function getAll(endpoint) {
     try {
         const response = await fetch(`${baseUrl}${endpoint}`);
         const data = await response.json();
-        console.log(data);
         return data;
     } catch (error) {
         console.error(error);
@@ -41,7 +40,7 @@ async function create(endpoint, data) {
 async function update(endpoint, id, data) {
     try {
         const response = await fetch(`${baseUrl}${endpoint}/${id}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },

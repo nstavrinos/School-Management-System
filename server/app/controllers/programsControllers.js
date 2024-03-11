@@ -1,4 +1,5 @@
 // Import any necessary modules or models
+const Student = require('../models/student');
 const Program = require('../models/program');
 
 // Example async controller for getting all programs
@@ -23,6 +24,13 @@ const getProgramById = async (req, res) => {
 
         // Logic to fetch the program from the database
         const program = await Program.findById(id);
+
+        if(program.students.length > 0){
+            // join students with programs
+            const students = await Student.find({_id: {$in: program.students}});
+            program.students = students;
+
+        }
 
         // Return the program as a response
         res.status(200).json(program);
@@ -53,6 +61,17 @@ const updateProgram = async (req, res) => {
     try {
         // Extract the necessary data from the request body and parameters
         const { id } = req.params;
+        const student = req.body;
+
+        if(student){
+            const newStudent = await Student.create(student);
+            const program = await Program.findById(id);
+            program.students.push(newStudent._id);
+            await program.save();
+            return res.status(201).json({message: 'Student added successfully',newStudent});
+        }
+
+
 
         // Logic to update the program in the database
         const updatedProgram = await Program.findByIdAndUpdate(id, req.body, { new: true });

@@ -8,8 +8,14 @@ const studentData = new mongoose.Schema({
     age: {type: Number, required: true},
     grades:[{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Grade'
+        ref: 'Grade',
+        default: []
     }],
+    program:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Program',
+        default: []
+    }]
     
 });
 
