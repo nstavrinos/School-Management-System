@@ -25,6 +25,7 @@ const getProgramById = async (req, res) => {
         // Logic to fetch the program from the database
         const program = await Program.findById(id);
 
+        // If the program has students, fetch them from the database
         if(program.students.length > 0){
             // join students with programs
             const students = await Student.find({_id: {$in: program.students}});
@@ -35,6 +36,11 @@ const getProgramById = async (req, res) => {
         // Return the program as a response
         res.status(200).json(program);
     } catch (error) {
+
+        // If the program is not found, return a 404 response
+        if (error.kind === 'ObjectId') {
+            return res.status(404).json({ error: 'Program not found' });
+        }
         // Handle any errors that occur during the process
         res.status(500).json({ error: 'Internal server error' });
     }
@@ -61,17 +67,6 @@ const updateProgram = async (req, res) => {
     try {
         // Extract the necessary data from the request body and parameters
         const { id } = req.params;
-        const student = req.body;
-
-        if(student){
-            const newStudent = await Student.create(student);
-            const program = await Program.findById(id);
-            program.students.push(newStudent._id);
-            await program.save();
-            return res.status(201).json({message: 'Student added successfully',newStudent});
-        }
-
-
 
         // Logic to update the program in the database
         const updatedProgram = await Program.findByIdAndUpdate(id, req.body, { new: true });
@@ -83,6 +78,32 @@ const updateProgram = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
+
+
+// Example async controller for creating a new student and adding it to a program
+const createStudentUpdateProgram = async (req, res) => {
+    try {
+        // Extract the necessary data from the request body and parameters
+        const { id } = req.params;
+        const student = req.body;
+
+        // Logic to create a new student in the database
+        const newStudent = await Student.create(student);
+
+        // Logic to update the program in the database
+        const program = await Program.findById(id);
+        program.students.push(newStudent._id);
+        await program.save();
+
+        // Return the newly created student as a response
+        res.status(201).json({message: 'Student added successfully',newStudent});
+    } catch (error) {
+        // Handle any errors that occur during the process
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
 
 // Example async controller for deleting a program
 const deleteProgram = async (req, res) => {
@@ -107,5 +128,6 @@ module.exports = {
     getProgramById,
     createProgram,
     updateProgram,
+    createStudentUpdateProgram,
     deleteProgram,
 };

@@ -14,9 +14,17 @@ async function getAll(endpoint) {
 async function getById(endpoint, id) {
     try {
         const response = await fetch(`${baseUrl}${endpoint}/${id}`);
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error);
+        }
+
         const data = await response.json();
+
         return data;
     } catch (error) {
+        
         console.error(error);
     }
 }
@@ -31,6 +39,7 @@ async function create(endpoint, data) {
             body: JSON.stringify(data),
         });
         const responseData = await response.json();
+
         return responseData;
     } catch (error) {
         console.error(error);

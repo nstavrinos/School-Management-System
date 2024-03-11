@@ -1,103 +1,17 @@
-import { useParams, useNavigate, Link } from "react-router-dom";
 import {  useForm } from 'react-hook-form'; 
-import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
-import {  update, create, getById } from '../api/programsAPI';
-import { useEffect,useState } from "react";
-import StudentsList from "./StudentsList";
-import NotFoundPage from "../pages/NotFoundPage";
 
-export default function CreateProgram() {
-  // const {register,handleSubmit,setValue,setError,formState: { errors, isSubmitting },} = useForm(  {defaultValues: {
-  //       program_name: "",
-  //       begin:  new Date().toISOString().slice(0,10),
-  //       end: new Date().toISOString().slice(0,10)
-  // }});
+export default function ProgramForm({ program, submitText, submitAction }) {
 
-  const params = useParams();
-  const navigateTo = useNavigate();
-  const queryClient = useQueryClient();
-  const [program, setProgram] = useState({
-      program_name: "",
-      begin:  new Date().toISOString().slice(0,10),
-      end: new Date().toISOString().slice(0,10),
-      students: []
-});
-const id = params.id?.toString() || undefined;
+    const {register,handleSubmit,formState: { errors, isSubmitting }} = useForm(  {defaultValues: {
+        program_name: program?.program_name || "",
+        begin:  program?.begin.slice(0,10) || new Date().toISOString().slice(0,10),
+        end: program?.end.slice(0,10) || new Date().toISOString().slice(0,10),
+        students: program?.students || []
+    }});
 
-const {register,handleSubmit,setValue,getValues,setError,formState: { errors, isSubmitting },} = useForm(  {defaultValues: program});
-
-const {data: programData,isError} = useQuery({
-  queryKey: ["programs",id],
-  enabled: !!id,
-  queryFn: async() =>  {return await getById("programs",id);},
-});
-
-useEffect(() => {
-  if(programData){
-      setValue('program_name', programData?.program_name);
-      setValue('begin', programData.begin?.slice(0,10));
-      setValue('end', programData.end?.slice(0,10));
-      setProgram(programData);
-  }
-}, [programData]);
-
-const {mutateAsync: del} = useMutation({
-  mutationFn: (studentId) =>  remove("students", studentId),
-  onSuccess: () => {
-      queryClient.invalidateQueries(["students"]);
-  },
-  onError: (error) => {
-      console.error(error);
-  }
-});
-
-async function deleteStudent(studentId) {
-  try {
-      const response = await del(studentId);
-      console.log(response.message);
-  } catch (error) {
-      console.error(error);
-  }
-}
-
-
-
-
-  const {mutateAsync, isPending} = useMutation({
-    mutationFn: (data) =>  {return (id? update("programs", id, data): create("programs", data))},
-    onSuccess: () => {
-        queryClient.invalidateQueries(["programs",id]);
-    },
-    onError: (error) => {
-        console.error(error);
-    }
-});
-
-  const onSubmit = async (data) => {
-        
-    try {
-        const response = await mutateAsync(data);
-        console.log("bbb",response.message);
-        if(id === undefined){
-          navigateTo('/programs');
-        }
-        
-    } catch (error) {   
-        console.error(error);
-    }
-};
-
-if(isError){
-  return <NotFoundPage/>
-}
-
-
-  // This following section will display the form that takes the input from the user.
   return (
-    <>
-      <h3 className="text-lg font-semibold p-4">{params.id? "Update":"Create"} Program</h3>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
+    <form
+        onSubmit={handleSubmit(submitAction)}
         className="border rounded-lg overflow-hidden p-4"
       >
         <div className="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-slate-900/10 pb-12 md:grid-cols-2">
@@ -174,7 +88,7 @@ if(isError){
             </div>
             <input
           type="submit"
-          value="Save Program Details"
+          value={submitText}
           disabled={isSubmitting}
           className="inline-flex items-center justify-center whitespace-nowrap text-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-slate-100 hover:text-accent-foreground h-9 rounded-md px-3 cursor-pointer mt-4"
         />
@@ -182,8 +96,5 @@ if(isError){
         </div>
 
       </form>
-     
-      <StudentsList students={program.students} headerInfo="List of Students that are part of this program" buttonLink={`/programs/addNewStudent/${program._id}`} deleteFun={deleteStudent}/>
-    </>
   );
 }
