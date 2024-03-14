@@ -18,9 +18,10 @@ export  default  function  StudentsList ({students, headerInfo , buttonLink,dele
         return students?.map((student) => {
             return (
                 <Student
+                    key={student._id}
                     student={student}
                     deleteStudent={deleteStudent}
-                    key={student._id}
+                    
                 />
             );
         });

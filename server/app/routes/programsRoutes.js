@@ -15,7 +15,8 @@ router.post('/', programsController.createProgram);
 // PATCH /programs/:id
 router.patch('/:id', programsController.updateProgram);
 
-router.patch('/addStudent/:id', programsController.createStudentUpdateProgram);
+// PATCH /programs/addStudentToProgram/:id
+router.patch('/addStudentToProgram/:id', programsController.addStudentToProgram);
 
 // DELETE /programs/:id
 router.delete('/:id', programsController.deleteProgram);

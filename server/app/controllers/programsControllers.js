@@ -54,7 +54,8 @@ const createProgram = async (req, res) => {
         const newProgram = await Program.create(req.body);
        
         // Return the newly created program as a response
-        res.status(201).json({message: 'Program created successfully',newProgram});
+        res.status(201).json(newProgram);
+      //  res.status(201).json({message: 'Program created successfully',newProgram});
     } catch (error) {
         // Handle any errors that occur during the process
         console.log(error);
@@ -72,7 +73,8 @@ const updateProgram = async (req, res) => {
         const updatedProgram = await Program.findByIdAndUpdate(id, req.body, { new: true });
 
         // Return the updated program as a response
-        res.status(200).json({message: 'Program updated successfully', updatedProgram});
+        res.status(200).json( updatedProgram);
+       // res.status(200).json({message: 'Program updated successfully', program: updatedProgram});
     } catch (error) {
         // Handle any errors that occur during the process
         res.status(500).json({ error: 'Internal server error' });
@@ -81,7 +83,7 @@ const updateProgram = async (req, res) => {
 
 
 // Example async controller for creating a new student and adding it to a program
-const createStudentUpdateProgram = async (req, res) => {
+const addStudentToProgram = async (req, res) => {
     try {
         // Extract the necessary data from the request body and parameters
         const { id } = req.params;
@@ -95,15 +97,18 @@ const createStudentUpdateProgram = async (req, res) => {
         program.students.push(newStudent._id);
         await program.save();
 
+        // join students with programs
+        const students = await Student.find({_id: {$in: program.students}});
+        program.students = students;
+
         // Return the newly created student as a response
-        res.status(201).json({message: 'Student added successfully',newStudent});
+        res.status(201).json(program);
+        //res.status(201).json({message: 'Student added successfully',program});
     } catch (error) {
         // Handle any errors that occur during the process
         res.status(500).json({ error: 'Internal server error' });
     }
 }
-
-
 
 // Example async controller for deleting a program
 const deleteProgram = async (req, res) => {
@@ -128,6 +133,6 @@ module.exports = {
     getProgramById,
     createProgram,
     updateProgram,
-    createStudentUpdateProgram,
+    addStudentToProgram,
     deleteProgram,
 };

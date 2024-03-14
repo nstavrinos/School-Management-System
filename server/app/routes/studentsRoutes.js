@@ -12,8 +12,8 @@ router.get('/:id', studentsController.getStudentById);
 // POST a new student
 router.post('/', studentsController.createStudent);
 
-// PUT/update a student by ID
-router.put('/:id', studentsController.updateStudent);
+// PATCH/update a student by ID
+router.patch('/:id', studentsController.updateStudent);
 
 // DELETE a student by ID
 router.delete('/:id', studentsController.deleteStudent);

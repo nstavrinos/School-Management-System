@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export default function Student({student, deleteStudent}) {
 
     return (
-        <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+        <tr  className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
             <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
                 {student.first_name}
             </td>

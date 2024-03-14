@@ -87,8 +87,10 @@ export function useCreate(endpoint) {
 
 export function useUpdate(endpoint) {
 
-        const {id} = useParams();
+        const {id} = useParams()
         const queryClient = useQueryClient();
+
+        
 
         const update = async(data) => {
             try {
@@ -109,8 +111,9 @@ export function useUpdate(endpoint) {
     
         return useMutation({
             mutationFn: update,
-            onSuccess: () => {
-                queryClient.invalidateQueries([endpoint, id]);
+            onSuccess: (data) => {
+                queryClient.setQueryData([endpoint, id], data);
+               // queryClient.invalidateQueries([endpoint],{exact: true});
             },
             onError: (error) => {
                 console.error(error);
@@ -118,7 +121,41 @@ export function useUpdate(endpoint) {
         });
     }
 
-export function useCreateStudentUpdateProgram(endpoint) {}
+export function useAddStudentToProgram() {
+
+    const {id} = useParams();
+    const queryClient = useQueryClient();
+
+    const addStudentToProgram = async(data) => {
+        try {
+            console.log("URL:",`${baseUrl}programs/addStudentToProgram/${id}`,"\nDATA:",data);
+            const response = await fetch(`${baseUrl}programs/addStudentToProgram/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const responseData = await response.json();
+            return responseData;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    return useMutation({
+        mutationFn: addStudentToProgram,
+        onSuccess: (data) => {
+            queryClient.setQueryData(["programs", id], data);
+           // queryClient.invalidateQueries([endpoint],{exact: true});
+            queryClient.invalidateQueries(["programs", id]);
+            queryClient.invalidateQueries(["students"]);
+        },
+        onError: (error) => {
+            console.error(error);
+        }
+    });
+}
 
 
 export function useDelete(endpoint) {
