@@ -9,8 +9,7 @@ const teacherData = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course'
     }]
-    
-});
+    }, {timestamps: true});
 
 const Teacher = mongoose.model('Teacher' , teacherData);
 

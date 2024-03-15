@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Program  ({program, deleteProgram}) {
+export default function Program  ({program, deleteFun}) {
 
     return (
     <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
@@ -27,7 +27,7 @@ export default function Program  ({program, deleteProgram}) {
             color="red"
             type="button"
             onClick={() => {
-              deleteProgram(program._id);
+              deleteFun(program._id);
             }}
           >
             Delete

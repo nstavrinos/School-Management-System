@@ -1,79 +1,59 @@
-import React from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React ,{useMemo, useState}from 'react';
 import Program from './Program';
-import { getAll, remove } from '../api/programsAPI';
 import { Link } from 'react-router-dom';
 
-export default function ProgramsList() {
+export default function ProgramsList({programs, headerInfo, buttonLink, deleteFun}) {
   
-    const queryClient = useQueryClient();
+  const [query, setQuery] = useState('');
 
-// This method fetches the programs from the database and stores them in the programs variable.
-    const { data: programs, isLoading, error } = useQuery({
-         queryKey: ["programs"],
-         queryFn: () =>  getAll("programs")
-    });
-  
-    // This method will delete a program from the database and will trigger an update  for the programs list.
+  const filterPrograms = useMemo(() => {
+      return programs?.filter((program) => {
+        return program.program_name.toLowerCase().includes(query.toLowerCase()) 
+              || program.begin.toLowerCase().includes(query.toLowerCase()) 
+              || program.end.toLowerCase().includes(query.toLowerCase());
+      });
+    }, [query, programs]);
 
-    const {mutateAsync, isPending} = useMutation({
-        mutationFn: (programId) =>  remove("programs", programId),
-        onSuccess: () => {
-            queryClient.invalidateQueries(["programs"]);
-        },
-        onError: (error) => {
-            console.error(error);
-        }
-    });
-
-    async function deleteProgram(programId) {
-        try {
-            const response = await mutateAsync(programId);
-            console.log(response.message);
-         } catch (error) {   
-             console.error(error);
-         }
-      }
-  
    // This method will map out the records on the table
     function programsList() {
 
-        if (programs.length === 0) {
+        if (filterPrograms?.length === 0) {
             return <tr><td colSpan="4">No programs found</td></tr>;
 
         }
 
 
-      return programs.map((program) => {
+      return filterPrograms.map((program) => {
         return (
           <Program
             program={program}
-            deleteProgram={deleteProgram}
+            deleteFun={deleteFun}
             key={program._id}
           />
         );
       });
     }
 
-    if (isLoading || isPending || programs === undefined) {    
-        return <div>Loading...</div>;
-    }
-
-    if (error ) {
-        return <div>An error has occurred: {error.message}</div>;
-    }
-  
     // This following section will display the table with the records of individuals.
     return (
       <>
       <div className="py-2 mx-auto flex items-center justify-between flex-wrap p-6">
-        <h3 className="text-lg font-semibold p-4">School Programs</h3>
+        <h3 className="text-lg font-semibold p-4">{headerInfo}</h3>
+        <div>
+          <input
+              type="text"
+              value={query}
+              placeholder="Search..."
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-700"
+              onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
         <button  className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded justify-end">
         <Link
-              to="/programs/create"
+              to={buttonLink}
               className= "hover:text-pink-500"
             >
-              Create
+              Add a New Program
         </Link>
             </button>
 </div>

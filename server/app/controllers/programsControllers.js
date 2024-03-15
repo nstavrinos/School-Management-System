@@ -72,6 +72,13 @@ const updateProgram = async (req, res) => {
         // Logic to update the program in the database
         const updatedProgram = await Program.findByIdAndUpdate(id, req.body, { new: true });
 
+        if(updatedProgram.students.length > 0){
+            // join students with programs
+            const students = await Student.find({_id: {$in: updatedProgram.students}});
+            updatedProgram.students = students;
+
+        }
+        
         // Return the updated program as a response
         res.status(200).json( updatedProgram);
        // res.status(200).json({message: 'Program updated successfully', program: updatedProgram});
@@ -110,6 +117,28 @@ const addStudentToProgram = async (req, res) => {
     }
 }
 
+// Example async controller for removing a student from a program
+const removeStudentFromProgram = async (req, res) => {
+    try {
+        // Extract the necessary data from the request body and parameters
+        const { id } = req.params;
+        const  studentId  = req.body.studentId;
+
+        // Logic to remove the student from the program in the database
+        const program = await Program.findById(id);
+        program.students = program.students.filter(student => student != studentId);
+        await program.save();
+
+        // Return a success message as a response
+        //res.status(200).json({ message: 'Student removed successfully' });
+        res.status(200).json(program);
+
+    } catch (error) {
+        // Handle any errors that occur during the process
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 // Example async controller for deleting a program
 const deleteProgram = async (req, res) => {
     try {
@@ -134,5 +163,6 @@ module.exports = {
     createProgram,
     updateProgram,
     addStudentToProgram,
+    removeStudentFromProgram,
     deleteProgram,
 };

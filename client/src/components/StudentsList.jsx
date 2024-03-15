@@ -1,26 +1,34 @@
-import React from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useMemo, useState } from 'react';
 import Student from './Student';
-import { getAll, remove } from '../api/programsAPI';
 import { Link } from 'react-router-dom';
 
 
-export  default  function  StudentsList ({students, headerInfo , buttonLink,deleteStudent}) {
+export  default  function  StudentsList ({students, headerInfo , buttonLink, deleteFun}) {
 
+  const [query, setQuery] = useState('');
+  
+
+  const filteredStudents = useMemo( () => {
+    return students?.filter(student => {
+      return student.first_name.toLowerCase().includes(query.toLowerCase()) 
+             || student.last_name.toLowerCase().includes(query.toLowerCase()) 
+             || student.phone.toLowerCase().includes(query.toLowerCase())
+    })
+  }, [query, students])
 
     function studentsList() {
 
-        if (students?.length === 0) {
+        if (filteredStudents?.length === 0) {
             return <tr><td colSpan="4">No students found</td></tr>;
 
         }
 
-        return students?.map((student) => {
+        return filteredStudents?.map((student) => {
             return (
                 <Student
                     key={student._id}
                     student={student}
-                    deleteStudent={deleteStudent}
+                    deleteFun={deleteFun}
                     
                 />
             );
@@ -31,6 +39,17 @@ export  default  function  StudentsList ({students, headerInfo , buttonLink,dele
         <>
         <div className="py-2 mx-auto flex items-center justify-between flex-wrap p-6">
           <h3 className="text-lg font-semibold p-4">{headerInfo}</h3>
+
+          <div>
+            <input
+                type="text"
+                value={query}
+                placeholder="Search..."
+                className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-700"
+                onChange={(e) => setQuery(e.target.value)}
+            />
+        </div>
+
           <button  className="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded justify-end">
           <Link
                 to={buttonLink}
@@ -45,6 +64,9 @@ export  default  function  StudentsList ({students, headerInfo , buttonLink,dele
               <table className="w-full caption-bottom text-sm">
                 <thead className="[&amp;_tr]:border-b">
                   <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
+                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0">
+                      Check
+                    </th>
                     <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0">
                       First Name
                     </th>

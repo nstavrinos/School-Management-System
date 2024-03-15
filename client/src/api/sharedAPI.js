@@ -19,7 +19,8 @@ export function useGetAll(endpoint) {
 
     return useQuery({
         queryKey: [endpoint],
-        queryFn: getAll
+        queryFn: getAll,
+        select: (data) => data.sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
     });
 }
 
@@ -113,6 +114,8 @@ export function useUpdate(endpoint) {
             mutationFn: update,
             onSuccess: (data) => {
                 queryClient.setQueryData([endpoint, id], data);
+                queryClient.invalidateQueries([endpoint, id]);
+                queryClient.invalidateQueries([endpoint],{exact: true});
                // queryClient.invalidateQueries([endpoint],{exact: true});
             },
             onError: (error) => {
@@ -128,7 +131,6 @@ export function useAddStudentToProgram() {
 
     const addStudentToProgram = async(data) => {
         try {
-            console.log("URL:",`${baseUrl}programs/addStudentToProgram/${id}`,"\nDATA:",data);
             const response = await fetch(`${baseUrl}programs/addStudentToProgram/${id}`, {
                 method: 'PATCH',
                 headers: {
@@ -157,13 +159,46 @@ export function useAddStudentToProgram() {
     });
 }
 
-
-export function useDelete(endpoint) {
+export function useRemoveStudentFromProgram() {
     
         const {id} = useParams();
         const queryClient = useQueryClient();
     
-        const remove = async() => {
+        const removeStudentFromProgram = async(data) => {
+            try {
+                const response = await fetch(`${baseUrl}programs/removeStudentFromProgram/${id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body:  JSON.stringify({"studentId" : data})
+                });
+                const responseData = await response.json();
+                return responseData;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    
+        return useMutation({
+            mutationFn: removeStudentFromProgram,
+            onSuccess: (data) => {
+                queryClient.setQueryData(["programs", id], data);
+            // queryClient.invalidateQueries([endpoint],{exact: true});
+                queryClient.invalidateQueries(["programs", id]);
+            },
+            onError: (error) => {
+                console.error(error);
+            }
+        });
+    }
+
+
+export function useDelete(endpoint) {
+    
+        const queryClient = useQueryClient();
+    
+        const remove = async(id) => {
             try {
                 const response = await fetch(`${baseUrl}${endpoint}/${id}`, {
                     method: 'DELETE',

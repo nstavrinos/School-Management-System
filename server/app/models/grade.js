@@ -10,8 +10,7 @@ const gradeData = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student'
     }
-    
-});
+}, {timestamps: true});
 
 const Grade = mongoose.model('Grade' , gradeData);
 

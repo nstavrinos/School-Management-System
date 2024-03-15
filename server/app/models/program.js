@@ -14,8 +14,7 @@ const programData = new mongoose.Schema({
         ref: 'Student',
         default: []
     }]
-    
-});
+    }, {timestamps: true});
 
 const Program = mongoose.model('Program' , programData);
 
