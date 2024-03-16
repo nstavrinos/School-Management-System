@@ -15,8 +15,8 @@ export default function StudentsPage() {
         return <div>An error has occurred: {error.message}</div>;
     }
     return (
-        <div className='px-5'>
+       
         <StudentsList students={students} headerInfo="Students" buttonLink={"/students/create"} deleteFun={deleteFun} />
-        </div>
+   
     );
     }

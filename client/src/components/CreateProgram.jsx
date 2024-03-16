@@ -28,7 +28,7 @@ export default function CreateProgram() {
         <>
             <h3 className="text-lg font-semibold p-4">"Create Program"</h3>
             <ProgramForm submitText="Create" submitAction={onSubmit} />    
-           {createProgram.data && <StudentsList students={createProgram?.data?.students} headerInfo="List of Students that are part of this program" buttonLink={`/programs/addStudentToProgram/${createProgram?.data?._id}`} deleteFun={removeFun}/>}
+           {createProgram.data && <StudentsList students={createProgram?.data?.students} headerInfo="List of Students that are part of this program" buttonLink={`/programs/addStudentsToProgram/${createProgram?.data?._id}`} deleteFun={removeFun}/>}
         </>
 
     );

@@ -9,11 +9,11 @@ export  default  function  StudentsList ({students, headerInfo , buttonLink, del
   
 
   const filteredStudents = useMemo( () => {
-    return students?.filter(student => {
-      return student.first_name.toLowerCase().includes(query.toLowerCase()) 
-             || student.last_name.toLowerCase().includes(query.toLowerCase()) 
-             || student.phone.toLowerCase().includes(query.toLowerCase())
-    })
+      return students?.filter(student => {
+        return student.first_name?.toLowerCase().includes(query.toLowerCase()) 
+              || student.last_name?.toLowerCase().includes(query.toLowerCase()) 
+              || student.phone?.toLowerCase().includes(query.toLowerCase())
+      })
   }, [query, students])
 
     function studentsList() {
@@ -36,7 +36,7 @@ export  default  function  StudentsList ({students, headerInfo , buttonLink, del
     }
 
     return (
-        <>
+        <div className="px-5">
         <div className="py-2 mx-auto flex items-center justify-between flex-wrap p-6">
           <h3 className="text-lg font-semibold p-4">{headerInfo}</h3>
 
@@ -64,9 +64,6 @@ export  default  function  StudentsList ({students, headerInfo , buttonLink, del
               <table className="w-full caption-bottom text-sm">
                 <thead className="[&amp;_tr]:border-b">
                   <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                  <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0">
-                      Check
-                    </th>
                     <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&amp;:has([role=checkbox])]:pr-0">
                       First Name
                     </th>
@@ -87,7 +84,7 @@ export  default  function  StudentsList ({students, headerInfo , buttonLink, del
               </table>
             </div>
           </div>
-        </>
+        </div >
       );
 
 

@@ -6,9 +6,6 @@ export default function Student({student, deleteFun}) {
     return (
         <tr  className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
             <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-               <input type="checkbox" />
-            </td>
-            <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
                 {student.first_name}
             </td>
             <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">

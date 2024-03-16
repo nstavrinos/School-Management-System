@@ -16,10 +16,13 @@ router.post('/', programsController.createProgram);
 router.patch('/:id', programsController.updateProgram);
 
 // PATCH /programs/addStudentToProgram/:id
-router.patch('/addStudentToProgram/:id', programsController.addStudentToProgram);
+//router.patch('/addStudentToProgram/:id', programsController.addStudentToProgram);
 
 // PATCH /programs/removeStudentFromProgram/:id
 router.patch('/removeStudentFromProgram/:id', programsController.removeStudentFromProgram);
+
+// PATCH /programs/addStudentsToProgram/:id
+router.patch('/addStudentsToProgram/:id', programsController.addStudentsToProgram);
 
 // DELETE /programs/:id
 router.delete('/:id', programsController.deleteProgram);

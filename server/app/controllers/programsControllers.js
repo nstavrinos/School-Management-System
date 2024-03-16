@@ -23,15 +23,15 @@ const getProgramById = async (req, res) => {
         const { id } = req.params;
 
         // Logic to fetch the program from the database
-        const program = await Program.findById(id);
+        const program = await Program.findById(id).populate('students');
 
         // If the program has students, fetch them from the database
-        if(program.students.length > 0){
-            // join students with programs
-            const students = await Student.find({_id: {$in: program.students}});
-            program.students = students;
+        // if(program.students.length > 0){
+        //     // join students with programs
+        //     const students = await Student.find({_id: {$in: program.students}});
+        //     program.students = students;
 
-        }
+        // }
 
         // Return the program as a response
         res.status(200).json(program);
@@ -90,27 +90,69 @@ const updateProgram = async (req, res) => {
 
 
 // Example async controller for creating a new student and adding it to a program
-const addStudentToProgram = async (req, res) => {
+// const addStudentsToProgram = async (req, res) => {
+//     try {
+//         // Extract the necessary data from the request body and parameters
+//         const { id } = req.params;
+//         const studentsId = req.body;
+
+//         // Logic to find the students in the database
+//         const addStudents = await Student.find({_id: {$in: studentsId}});
+
+//         console.log("addstudents",addStudents);
+
+//         // Logic to update the program in the database
+//         const program = await Program.findById(id);
+//         addStudents.forEach(student => {
+//             if(!program.students.includes(student._id)){
+//                 program.students.push(student._id);
+//             }
+//         });
+//         await program.save();
+//         console.log("pushedstudents",program.students);
+//         // join students with programs
+//         const students = await Student.find({_id: {$in: program.students}});
+//         program.students = students;
+
+
+
+//         // Return the newly created student as a response
+//         res.status(201).json(program);
+//         //res.status(201).json({message: 'Student added successfully',program});
+//     } catch (error) {
+//         // Handle any errors that occur during the process
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// }
+
+// Example async controller for adding a students to a program
+const addStudentsToProgram = async (req, res) => {
     try {
         // Extract the necessary data from the request body and parameters
         const { id } = req.params;
-        const student = req.body;
-
-        // Logic to create a new student in the database
-        const newStudent = await Student.create(student);
+        const students = req.body;
 
         // Logic to update the program in the database
         const program = await Program.findById(id);
-        program.students.push(newStudent._id);
+        program.students = program.students.concat(students);
         await program.save();
 
         // join students with programs
-        const students = await Student.find({_id: {$in: program.students}});
-        program.students = students;
+        const studentsList = await Student.find({_id: {$in: program.students}});
+        program.students = studentsList;
 
-        // Return the newly created student as a response
-        res.status(201).json(program);
-        //res.status(201).json({message: 'Student added successfully',program});
+        // insert program to students
+        // studentsList.forEach(async student => {
+        //     if(!student.programs.includes(program._id)){
+        //         student.programs.push(program._id);
+        //         await student.save();
+        //     }
+        // });
+       
+
+        // Return the updated program as a response
+        res.status(200).json(program);
+        //res.status(200).json({message: 'Students added successfully',program});
     } catch (error) {
         // Handle any errors that occur during the process
         res.status(500).json({ error: 'Internal server error' });
@@ -162,7 +204,8 @@ module.exports = {
     getProgramById,
     createProgram,
     updateProgram,
-    addStudentToProgram,
+  //  addStudentToProgram,
+    addStudentsToProgram,
     removeStudentFromProgram,
     deleteProgram,
 };

@@ -36,7 +36,7 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
 
     // This following section will display the table with the records of individuals.
     return (
-      <>
+      <div className="px-5 ">
       <div className="py-2 mx-auto flex items-center justify-between flex-wrap p-6">
         <h3 className="text-lg font-semibold p-4">{headerInfo}</h3>
         <div>
@@ -57,7 +57,7 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
         </Link>
             </button>
 </div>
-        <div className="border rounded-lg overflow-hidden">
+        <div className="border rounded-lg max-h-full overflow-y-auto">
           <div className="relative w-full overflow-auto">
             <table className="w-full caption-bottom text-sm">
               <thead className="[&amp;_tr]:border-b">
@@ -82,6 +82,6 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
             </table>
           </div>
         </div>
-      </>
+      </div>
     );
   }

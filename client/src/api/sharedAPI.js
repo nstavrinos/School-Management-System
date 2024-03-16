@@ -159,6 +159,41 @@ export function useAddStudentToProgram() {
     });
 }
 
+export function useAddStudentsToProgram (){
+
+    const {id} = useParams();
+    const queryClient = useQueryClient();
+
+    const addStudentsToProgram = async(data) => {
+        try {
+            const response = await fetch(`${baseUrl}programs/addStudentsToProgram/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body:  JSON.stringify(data)
+            });
+            const responseData = await response.json();
+            return responseData;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    return useMutation({
+        mutationFn: addStudentsToProgram,
+        onSuccess: (data) => {
+            queryClient.setQueryData(["programs", id], data);
+           // queryClient.invalidateQueries([endpoint],{exact: true});
+            queryClient.invalidateQueries(["programs", id]);
+        },
+        onError: (error) => {
+            console.error(error);
+        }
+    });
+
+}
+
 export function useRemoveStudentFromProgram() {
     
         const {id} = useParams();

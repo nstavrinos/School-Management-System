@@ -8,6 +8,7 @@ import CreateProgam from './components/CreateProgram.jsx'
 import CreateStudent from './components/CreateStudent.jsx'
 import EditProgram from './components/EditProgram.jsx'
 import EditStudent from './components/EditStudent.jsx'
+import AddStudents from './components/AddStudents.jsx'
 import App from './App.jsx'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
@@ -34,6 +35,9 @@ const BrowserRouter = createBrowserRouter([
               },
               { path: '/programs/addStudentToProgram/:id', 
                 element: <CreateStudent/>,
+              },
+              { path: '/programs/addStudentsToProgram/:id', 
+              element: <AddStudents/>,
               },
               { path: '/students',
               element: <StudentsPage/>
