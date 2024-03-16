@@ -91,11 +91,9 @@ export function useUpdate(endpoint) {
         const {id} = useParams()
         const queryClient = useQueryClient();
 
-        
-
         const update = async(data) => {
             try {
-                console.log("URL:",`${baseUrl}${endpoint}/${id}`,"\nDATA:",data);
+                
                 const response = await fetch(`${baseUrl}${endpoint}/${id}`, {
                     method: 'PATCH',
                     headers: {
@@ -157,6 +155,42 @@ export function useAddStudentToProgram() {
             console.error(error);
         }
     });
+}
+
+export function useAddCourseToProgram() {
+
+    const {id} = useParams();
+    const queryClient = useQueryClient();
+
+    const addCourseToProgram = async(data) => {
+        try {
+            console.log("URL:",`${baseUrl}programs/addCourseToProgram/${id}`,"\nDATA:",data);
+            const response = await fetch(`${baseUrl}programs/addCourseToProgram/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const responseData = await response.json();
+            return responseData;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    return useMutation({
+        mutationFn: addCourseToProgram,
+        onSuccess: (data) => {
+            queryClient.setQueryData(["programs", id], data);
+           // queryClient.invalidateQueries([endpoint],{exact: true});
+            queryClient.invalidateQueries(["programs", id]);
+        },
+        onError: (error) => {
+            console.error(error);
+        }
+    });
+
 }
 
 export function useAddStudentsToProgram (){

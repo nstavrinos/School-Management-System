@@ -8,12 +8,17 @@ import CreateProgam from './components/CreateProgram.jsx'
 import CreateStudent from './components/CreateStudent.jsx'
 import EditProgram from './components/EditProgram.jsx'
 import EditStudent from './components/EditStudent.jsx'
+import EditCourse from './components/EditCourse.jsx'
 import AddStudents from './components/AddStudents.jsx'
+import CreateTeacher from './components/CreateTeacher.jsx'
+import EditTeacher from './components/EditTeacher.jsx'
+import TeachersPage from './pages/TeachersPage.jsx'
 import App from './App.jsx'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import CreateCourse from './components/CreateCourse.jsx'
 
 const BrowserRouter = createBrowserRouter([
   {
@@ -37,17 +42,32 @@ const BrowserRouter = createBrowserRouter([
                 element: <CreateStudent/>,
               },
               { path: '/programs/addStudentsToProgram/:id', 
-              element: <AddStudents/>,
+                element: <AddStudents/>,
+              },
+              { path: '/programs/addCourseToProgram/:id', 
+                element: <CreateCourse/>,
               },
               { path: '/students',
-              element: <StudentsPage/>
-            },
+                element: <StudentsPage/>
+              },
               { path: '/students/:id', 
-              element: <EditStudent />,
-            },
+                element: <EditStudent />,
+              },
               { path: '/students/create', 
-              element: <CreateStudent/>,
-            },
+                element: <CreateStudent/>,
+              },
+              { path: '/courses/:id', 
+                element: <EditCourse/>,
+              },
+              { path: '/teachers',
+                element: <TeachersPage/>
+              },
+              { path: '/teachers/:id', 
+                element: <EditTeacher />,
+              },
+              { path: '/teachers/create', 
+                element: <CreateTeacher/>,
+              },
 
             ]
   }

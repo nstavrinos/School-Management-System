@@ -24,6 +24,9 @@ router.patch('/removeStudentFromProgram/:id', programsController.removeStudentFr
 // PATCH /programs/addStudentsToProgram/:id
 router.patch('/addStudentsToProgram/:id', programsController.addStudentsToProgram);
 
+// PATCH /programs/addCourseToProgram/:id
+router.patch('/addCourseToProgram/:id', programsController.addCourseToProgram);
+
 // DELETE /programs/:id
 router.delete('/:id', programsController.deleteProgram);
 

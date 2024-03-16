@@ -12,8 +12,8 @@ router.get('/:id', teachersController.getTeacherById);
 // POST a new teacher
 router.post('/', teachersController.createTeacher);
 
-// PUT/update a teacher by ID
-router.put('/:id', teachersController.updateTeacher);
+// PATCH update a teacher by ID
+router.patch('/:id', teachersController.updateTeacher);
 
 // DELETE a teacher by ID
 router.delete('/:id', teachersController.deleteTeacher);

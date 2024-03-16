@@ -1,6 +1,7 @@
 // Import any necessary modules or models
 const Student = require('../models/student');
 const Program = require('../models/program');
+const Course = require('../models/course');
 
 // Example async controller for getting all programs
 const getAllPrograms = async (req, res) => {
@@ -23,7 +24,7 @@ const getProgramById = async (req, res) => {
         const { id } = req.params;
 
         // Logic to fetch the program from the database
-        const program = await Program.findById(id).populate('students');
+        const program = await Program.findById(id).populate(['students','courses']);
 
         // If the program has students, fetch them from the database
         // if(program.students.length > 0){
@@ -70,14 +71,14 @@ const updateProgram = async (req, res) => {
         const { id } = req.params;
 
         // Logic to update the program in the database
-        const updatedProgram = await Program.findByIdAndUpdate(id, req.body, { new: true });
+        const updatedProgram = await Program.findByIdAndUpdate(id, req.body, { new: true }).populate(['students','courses']);
 
-        if(updatedProgram.students.length > 0){
-            // join students with programs
-            const students = await Student.find({_id: {$in: updatedProgram.students}});
-            updatedProgram.students = students;
+        // if(updatedProgram.students.length > 0){
+        //     // join students with programs
+        //     const students = await Student.find({_id: {$in: updatedProgram.students}});
+        //     updatedProgram.students = students;
 
-        }
+        // }
         
         // Return the updated program as a response
         res.status(200).json( updatedProgram);
@@ -181,6 +182,39 @@ const removeStudentFromProgram = async (req, res) => {
     }
 };
 
+// Example async controller for adding a course to a program
+const addCourseToProgram = async (req, res) => {
+    try {
+        // Extract the necessary data from the request body and parameters
+        const { id } = req.params;
+        const {course_name,duration} = req.body;
+
+        //create a new course and add it to the program
+        const newCourse = await Course.create({course_name: course_name, duration: duration, program: id});
+
+        // Logic to update the program in the database
+        const program = await Program.findById(id).populate('students');
+
+        if(!program.courses.includes(newCourse._id)){
+            program.courses.push(newCourse._id);
+
+        }
+        await program.save();
+        
+        // join courses with programs
+        await program.populate('courses');
+
+        // Return the updated program as a response
+        res.status(200).json(program);
+        //res.status(200).json({message: 'Course added successfully', program});
+    } catch (error) {
+        // Handle any errors that occur during the process
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+
 // Example async controller for deleting a program
 const deleteProgram = async (req, res) => {
     try {
@@ -207,5 +241,6 @@ module.exports = {
   //  addStudentToProgram,
     addStudentsToProgram,
     removeStudentFromProgram,
+    addCourseToProgram,
     deleteProgram,
 };

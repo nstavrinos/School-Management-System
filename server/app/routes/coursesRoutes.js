@@ -12,8 +12,8 @@ router.get('/:id', coursesController.getCourseById);
 // POST a new course
 router.post('/', coursesController.createCourse);
 
-// PUT/update a course by ID
-router.put('/:id', coursesController.updateCourse);
+// PATCH update a course by ID
+router.patch('/:id', coursesController.updateCourse);
 
 // DELETE a course by ID
 router.delete('/:id', coursesController.deleteCourse);

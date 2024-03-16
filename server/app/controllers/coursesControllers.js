@@ -1,5 +1,6 @@
 // Import any necessary modules or models
 const Course = require('../models/course');
+const Program = require('../models/program');
 
 // Example async controller for getting all courses
 const getAllCourses = async (req, res) => {
@@ -53,13 +54,14 @@ async function createCourse(req, res) {
 const updateCourse = async (req, res) => {
     try {
         // Extract the necessary data from the request body
-        const { title, description, price } = req.body;
+      //  const { title, description, price } = req.body;
         const courseId = req.params.id;
+
+        console.log("REQ.BODY:",req.body);
 
         // Logic to update the course in the database
         const updatedCourse = await Course.findByIdAndUpdate(
-            courseId,
-            { title, description, price },
+            courseId,req.body,
             { new: true }
         );
 
@@ -76,8 +78,17 @@ const deleteCourse = async (req, res) => {
     try {
         const courseId = req.params.id;
 
+        const course = await Course.findById(courseId);
+
+        // Logic to delete the course from the program
+        const program = await Program.findById(course.program);
+        program.courses = program.courses.filter((course) => course != courseId);
+        await program.save();
+
+        await course.deleteOne();
+
         // Logic to delete the course from the database
-        await Course.findByIdAndDelete(courseId);
+      //  await Course.findByIdAndDelete(courseId);
 
         // Send a success message as a response
         res.status(200).json({ message: 'Course deleted successfully' });
