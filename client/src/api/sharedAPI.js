@@ -183,7 +183,11 @@ export function useAddCourseToProgram() {
         mutationFn: addCourseToProgram,
         onSuccess: (data) => {
             queryClient.setQueryData(["programs", id], data);
-           // queryClient.invalidateQueries([endpoint],{exact: true});
+            // SETTING THE COURSE DATA IN THE QUERY CACHE
+            queryClient.setQueryData(["courses", data.courses.at(-1)._id], data.courses.at(-1));
+            // INVALIDATING THE COURSES QUERY
+            queryClient.invalidateQueries(["courses", data.courses.at(-1)._id]);
+          // queryClient.invalidateQueries([endpoint],{exact: true});
             queryClient.invalidateQueries(["programs", id]);
         },
         onError: (error) => {
@@ -260,8 +264,74 @@ export function useRemoveStudentFromProgram() {
                 console.error(error);
             }
         });
-    }
+}
 
+export function useRemovoTeacherFromCourse() {
+        
+            const {id} = useParams();
+            const queryClient = useQueryClient();
+        
+            const removeTeacherFromCourse = async() => {
+                try {
+                    const response = await fetch(`${baseUrl}courses/removeTeacherFromCourse/${id}`, {
+                        method: 'PATCH',
+                    });
+                    const responseData = await response.json();
+                    return responseData;
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        
+            return useMutation({
+                mutationFn: removeTeacherFromCourse,
+                onSuccess: (data) => {
+                    queryClient.setQueryData(["courses", id], data);
+
+                // queryClient.invalidateQueries([endpoint],{exact: true});
+                    queryClient.invalidateQueries(["courses", id]);
+                    queryClient.invalidateQueries(["teachers"]);
+                },
+                onError: (error) => {
+                    console.error(error);
+                }
+            });
+}
+
+export function useRemoveCourseFromTeacher() {
+        
+            const {id} = useParams();
+            const queryClient = useQueryClient();
+        
+            const removeCourseFromTeacher = async(data) => {
+                try {
+                    const response = await fetch(`${baseUrl}teachers/removeCourseFromTeacher/${id}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body:  JSON.stringify({"courseId" : data})
+                    });
+                    const responseData = await response.json();
+                    return responseData;
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        
+            return useMutation({
+                mutationFn: removeCourseFromTeacher,
+                onSuccess: (data) => {
+                    queryClient.setQueryData(["teachers", id], data);
+                // queryClient.invalidateQueries([endpoint],{exact: true});
+                    queryClient.invalidateQueries(["teachers", id]);
+                },
+                onError: (error) => {
+                    console.error(error);
+                }
+            });
+    
+}
 
 export function useDelete(endpoint) {
     
@@ -288,4 +358,40 @@ export function useDelete(endpoint) {
                 console.error(error);
             }
         });
+}
+
+export function useAddTeacherToCourse() {
+
+    const {id} = useParams();
+    const queryClient = useQueryClient();
+
+    const addTeacherToCourse = async(data) => {
+        try {
+            const response = await fetch(`${baseUrl}courses/addTeacherToCourse/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const responseData = await response.json();
+            return responseData;
+        } catch (error) {
+            console.error(error);
+        }
     }
+
+    return useMutation({
+        mutationFn: addTeacherToCourse,
+        onSuccess: (data) => {
+            queryClient.setQueryData(["courses", id], data);
+           // queryClient.invalidateQueries([endpoint],{exact: true});
+            queryClient.invalidateQueries(["courses", id]);
+        },
+        onError: (error) => {
+            console.error(error);
+        }
+    });
+}
+
+

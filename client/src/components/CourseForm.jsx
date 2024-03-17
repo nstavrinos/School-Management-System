@@ -7,7 +7,8 @@ export default function CourseForm({ course, submitText, submitAction }) {
         course_name: course?.course_name || "",
         duration:  course?.duration || 0,
         grades: course?.grades || [],
-        program: course?.program || undefined
+        program: course?.program || undefined,
+        teacher: course?.teacher || undefined
     }});
 
   return (

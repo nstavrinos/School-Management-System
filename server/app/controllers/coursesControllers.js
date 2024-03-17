@@ -1,6 +1,7 @@
 // Import any necessary modules or models
 const Course = require('../models/course');
 const Program = require('../models/program');
+const Teacher = require('../models/teacher');
 
 // Example async controller for getting all courses
 const getAllCourses = async (req, res) => {
@@ -22,7 +23,7 @@ const getCourseById = async (req, res) => {
         const courseId = req.params.id;
 
         // Logic to fetch the course from the database
-        const course = await Course.findById(courseId);
+        const course = await Course.findById(courseId).populate('teacher');
 
         // Send the course as a response
         res.status(200).json(course);
@@ -37,10 +38,10 @@ const getCourseById = async (req, res) => {
 async function createCourse(req, res) {
     try {
         // Extract the necessary data from the request body
-        const { title, description, price } = req.body;
+        //const { course_name, duration, program } = req.body;
 
         // Logic to create a new course in the database
-        const newCourse = await Course.create({ title, description, price });
+        const newCourse = await Course.create(req.body);
 
         // Send the newly created course as a response
         res.status(201).json(newCourse);
@@ -54,10 +55,7 @@ async function createCourse(req, res) {
 const updateCourse = async (req, res) => {
     try {
         // Extract the necessary data from the request body
-      //  const { title, description, price } = req.body;
         const courseId = req.params.id;
-
-        console.log("REQ.BODY:",req.body);
 
         // Logic to update the course in the database
         const updatedCourse = await Course.findByIdAndUpdate(
@@ -67,6 +65,59 @@ const updateCourse = async (req, res) => {
 
         // Send the updated course as a response
         res.status(200).json(updatedCourse);
+    } catch (error) {
+        // Handle any errors that occur during the process
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// Example async controller for adding a teacher to a course
+const addTeacherToCourse = async (req, res) => {
+    try {
+        const courseId = req.params.id;
+        const teacherId = req.body.teacherId;
+
+        // Logic to add the teacher to the course
+        const course = await Course.findById(courseId);
+        course.teacher = teacherId;
+        await course.save();
+
+        // Logic to add the course to the teacher
+        const teacher = await Teacher.findById(teacherId);
+        teacher.courses.push(courseId);
+        await teacher.save();
+
+        course.teacher = teacher;
+
+        // Send a success message as a response
+       // res.status(200).json({ message: 'Teacher added to the course successfully' });
+        res.status(200).json(course);
+    } catch (error) {
+        // Handle any errors that occur during the process
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+// Example async controller for removing a teacher from a course
+const removeTeacherFromCourse = async (req, res) => {
+    try {
+        const courseId = req.params.id;
+
+        // Logic to remove the teacher from the course
+        const course = await Course.findById(courseId);
+
+        const teacher = await Teacher.findById(course.teacher);
+        teacher.courses = teacher.courses.filter((course) => course != course.id);
+        await teacher.save();
+
+        course.teacher = undefined;
+        await course.save();
+
+        // Logic to remove the course from the teacher
+
+
+        // Send a success message as a response
+        res.status(200).json({ message: 'Teacher removed from the course successfully' });
     } catch (error) {
         // Handle any errors that occur during the process
         res.status(500).json({ error: 'Internal server error' });
@@ -104,5 +155,7 @@ module.exports = {
     getCourseById,
     createCourse,
     updateCourse,
+    addTeacherToCourse,
+    removeTeacherFromCourse,
     deleteCourse,
 };

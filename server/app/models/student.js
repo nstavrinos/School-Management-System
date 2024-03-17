@@ -11,7 +11,7 @@ const studentData = new mongoose.Schema({
         ref: 'Grade',
         default: []
     }],
-    program:[{
+    programs:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Program',
         default: []

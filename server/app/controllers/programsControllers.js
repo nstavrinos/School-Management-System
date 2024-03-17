@@ -221,8 +221,33 @@ const deleteProgram = async (req, res) => {
         // Extract the necessary data from the Url parameters
         const { id } = req.params;
 
-        // Logic to delete the program from the database
-        await Program.findByIdAndDelete(id);
+        // Logic to find the program in the database
+        const program = await Program.findById(id);
+
+        // If the program is not found, return a 404 response
+        if (!program) {
+            return res.status(404).json({ error: 'Program not found' });
+        }
+
+        // If the program has students, remove the program from the students
+         if(program.students.length > 0){
+            const students = await Student.find({_id: {$in: program.students}});
+            students.forEach(async student => {
+                student.programs = student.programs.filter(program => program != id);
+                await student.save();
+            });
+        }
+
+        // If the program has courses, delete the courses
+        if(program.courses.length > 0){
+            const courses = await Course.find({_id: {$in: program.courses}});
+            courses.forEach(async course => {
+                await Course.findByIdAndDelete(course._id);
+            });
+        }
+
+        // delete the program from  the database
+        await program.deleteOne();
 
         // Return a success message as a response
         res.status(200).json({ message: 'Program deleted successfully' });

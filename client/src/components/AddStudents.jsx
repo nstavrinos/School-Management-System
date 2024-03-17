@@ -15,9 +15,9 @@ export  default  function  AddStudents () {
 
     const onCheckboxChange = (e) => {
         if (e.target.checked) {
-            setSelectedStudents([...selectedStudents, e.target.value]);
+            setSelectedStudents((prev)=>[...prev, e.target.value]);
         } else {
-            setSelectedStudents(selectedStudents.filter((id) => id !== e.target.value));
+            setSelectedStudents((prev)=>prev.filter((id) => id !== e.target.value));
         }
     };
 
@@ -35,7 +35,7 @@ export  default  function  AddStudents () {
              || student.last_name.toLowerCase().includes(query.toLowerCase()) 
              || student.phone.toLowerCase().includes(query.toLowerCase()))
              && !studentsInProgram.includes(student._id)
-    })
+    });
   }, [query, students, studentsInProgram])
 
 

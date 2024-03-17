@@ -59,6 +59,31 @@ const updateTeacher = async (req, res) => {
     }
 };
 
+const removeCourseFromTeacher = async (req, res) => {
+    try {
+        // Extract the teacher ID and course ID from the request parameters
+        const { teacherId } = req.params;
+        const { courseId } = req.body;
+
+        // Logic to remove the course from the teacher in the database
+        const teacher = await Teacher.findById(teacherId);
+        teacher.courses.pull(courseId);
+        await teacher.save();
+
+        const course = await Course.findById(courseId);
+        course.teacher = undefined;
+        await course.save();
+
+        await teacher.populate('courses').execPopulate();
+
+        // Return the updated teacher as a response
+        res.status(200).json(teacher);
+    } catch (error) {
+        // Handle any errors that occur during the process
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 const deleteTeacher = async (req, res) => {
     try {
         // Extract the teacher ID from the request parameters
@@ -81,5 +106,6 @@ module.exports = {
     getTeacherById,
     createTeacher,
     updateTeacher,
+    removeCourseFromTeacher,
     deleteTeacher,
 };

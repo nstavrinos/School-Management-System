@@ -22,7 +22,7 @@ export default function TeachersList({teachers, headerInfo, buttonLink, deleteFu
     
             }
 
-        return filterTeachers.map((teacher) => {
+        return filterTeachers?.map((teacher) => {
             return (
                 <Teacher
                 teacher={teacher}

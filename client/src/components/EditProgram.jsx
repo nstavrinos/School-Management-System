@@ -35,7 +35,7 @@ export default function EditProgram() {
             <h3 className="text-lg font-semibold p-4">"EDIT Program"</h3>
             {getProgram?.data && <ProgramForm program={getProgram?.data} submitText="Edit" submitAction={onSubmit} />}    
             <StudentsList students={getProgram?.data?.students} headerInfo="List of Students that are part of this program" buttonLink={`/programs/addStudentsToProgram/${getProgram?.data?._id}`} deleteFun={studentRemoveFun}/>
-            <CoursesList courses={getProgram?.data?.courses} headerInfo="List of Courses" buttonLink={`/programs/addCourseToProgram/${getProgram?.data?._id}`} deleteFun={courseDelFun}/>
+            <CoursesList courses={getProgram?.data?.courses} headerInfo="List of Courses" buttonLink={`/programs/addCourseToProgram/${getProgram?.data?._id}`} buttonInfo='Delete' deleteFun={courseDelFun}/>
         </>
 
     );

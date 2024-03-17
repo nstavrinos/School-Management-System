@@ -1,5 +1,6 @@
 // Import any necessary modules or models
 const Student = require('../models/student');
+const Program = require('../models/program');
 
 // Example controller for getting all students
 const getAllStudents = async (req, res) => {
@@ -72,8 +73,27 @@ const deleteStudent = async (req, res) => {
     try {
         const studentId = req.params.id;
 
+        // Logic to find the student from the database
+        const student = await Student.findById(studentId);
+
+        // If the student is not found, return an error message
+        if (!student) {
+            return res.status(404).json({ error: 'Student not found' });
+        }
+
+        // If the student has programs, remove the student from the programs
+        if (student.programs.length > 0) {
+            student.programs.forEach(async (program) => {
+                await Program.findByIdAndUpdate(
+                    program,
+                    { $pull: { students: studentId } },
+                    { new: true }
+                );
+            });
+        }
+
         // Logic to delete the student from the database
-        await Student.findByIdAndDelete(studentId);
+        await student.deleteOne();
 
         // Return a success message as a response
         res.status(200).json({ message: 'Student deleted successfully' });

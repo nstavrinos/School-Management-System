@@ -9,8 +9,8 @@ export default function CreateCourse  () {
     const createCourse = useAddCourseToProgram() ;
 
     const onSubmit = async (data) => {
-        createCourse.mutate(data);
-        navigateTo(-1);
+        const newCourse = await createCourse.mutateAsync(data);
+        navigateTo(`/courses/${newCourse.courses.at(-1)._id}`);
    };
 
     if(createCourse.isError){

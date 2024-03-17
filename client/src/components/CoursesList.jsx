@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Course from './Course';
 
 
-export  default  function  CoursesList ({courses, headerInfo , buttonLink, deleteFun}) {
+export  default  function  CoursesList ({courses, headerInfo , buttonLink, buttonInfo ,deleteFun}) {
 
   const [query, setQuery] = useState('');
   
@@ -28,6 +28,7 @@ export  default  function  CoursesList ({courses, headerInfo , buttonLink, delet
                     key={course._id}
                     course={course}
                     deleteFun={deleteFun}
+                    buttonInfo={buttonInfo}
                     
                 />
             );

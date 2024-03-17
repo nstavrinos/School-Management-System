@@ -15,6 +15,13 @@ router.post('/', coursesController.createCourse);
 // PATCH update a course by ID
 router.patch('/:id', coursesController.updateCourse);
 
+// PATCH add a teacher to a course by ID
+//router.patch('/:id/addTeacher', coursesController.addTeacherToCourse);
+router.patch('/addTeacherToCourse/:id', coursesController.addTeacherToCourse);
+
+// PATCH remove a teacher from a course by ID
+router.patch('/removeTeacherFromCourse/:id', coursesController.removeTeacherFromCourse);
+
 // DELETE a course by ID
 router.delete('/:id', coursesController.deleteCourse);
 
