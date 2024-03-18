@@ -22,7 +22,7 @@ const getStudentById = async (req, res) => {
         const studentId = req.params.id;
 
         // Logic to fetch the student from the database
-        const student = await Student.findById(studentId);
+        const student = await Student.findById(studentId).populate('programs');
 
         // Return the student as a response
         res.status(200).json(student);

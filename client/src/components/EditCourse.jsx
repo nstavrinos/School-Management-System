@@ -2,6 +2,7 @@ import {useGetById, useUpdate, useRemovoTeacherFromCourse} from '../api/sharedAP
 import { useNavigate, Link} from 'react-router-dom';
 import NotFoundPage from '../pages/NotFoundPage';
 import CourseForm from "./CourseForm";
+import GradesList from './GradesList';
 
 export default function EditCourse() {
     const navigateTo = useNavigate();
@@ -99,6 +100,7 @@ export default function EditCourse() {
           </div>
         </div>
         </div>
+        <GradesList grades={getCourse?.data?.grades} headerInfo={"The Grades of the Students"}/>
 
         </>
 

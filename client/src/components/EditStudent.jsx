@@ -2,12 +2,17 @@ import {useGetById, useUpdate, } from '../api/sharedAPI';
 import { useNavigate} from 'react-router-dom';
 import NotFoundPage from '../pages/NotFoundPage';
 import StudentForm from "./StudentForm";
+import ProgramsList from "./ProgramsList";
 
 export default function EditStudent() {
     const navigateTo = useNavigate();
 
     const getStudent= useGetById("students");
     const updateStudent = useUpdate("students");
+
+    const studentRemoveFun = async  (studentId) => {
+        console.log("Student ID: ", studentId);
+    }
 
     const onSubmit = async (data) => {
         updateStudent.mutate(data);
@@ -24,8 +29,9 @@ export default function EditStudent() {
 
     return (
         <>
-            <h3 className="text-lg font-semibold p-4">"EDIT Program"</h3>
+            <h3 className="text-lg font-semibold p-4">EDIT Student</h3>
             {getStudent?.data && <StudentForm student={getStudent.data} submitText="Edit" submitAction={onSubmit} />}    
+            <ProgramsList programs={getStudent?.data?.programs} headerInfo="List of programs that the student is part of" buttonLink={''} deleteFun={studentRemoveFun}/>
         </>
 
     );
