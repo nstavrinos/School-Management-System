@@ -3,6 +3,7 @@ import { useNavigate} from 'react-router-dom';
 import NotFoundPage from '../pages/NotFoundPage';
 import StudentForm from "./StudentForm";
 import ProgramsList from "./ProgramsList";
+import GradesList from './GradesList';
 
 export default function EditStudent() {
     const navigateTo = useNavigate();
@@ -32,6 +33,7 @@ export default function EditStudent() {
             <h3 className="text-lg font-semibold p-4">EDIT Student</h3>
             {getStudent?.data && <StudentForm student={getStudent.data} submitText="Edit" submitAction={onSubmit} />}    
             <ProgramsList programs={getStudent?.data?.programs} headerInfo="List of programs that the student is part of" buttonLink={''} deleteFun={studentRemoveFun}/>
+            <GradesList grades={getStudent?.data?.grades} mode="student" />
         </>
 
     );

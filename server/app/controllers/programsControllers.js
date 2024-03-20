@@ -135,9 +135,7 @@ const addStudentsToProgram = async (req, res) => {
         const students = req.body;
 
         // Logic to update the program in the database
-        const program = await Program.findById(id);
-        program.students = program.students.concat(students);
-        await program.save();
+        const program = await Program.findByIdAndUpdate(id, { $push: { students: { $each: students } } },{ new: true });
 
         // Logic to create the grades for each course in the program in the database with promises
         program.courses.forEach(async course_id => { 
@@ -147,7 +145,7 @@ const addStudentsToProgram = async (req, res) => {
                 grades.push(grade._id);
                 await Student.findByIdAndUpdate(student_id, { $push: { grades: grade._id , programs: program._id } },{ new: true });
             }));
-            const course = await Course.findByIdAndUpdate(course_id, { $push: { grades: grades } },{ new: true });
+            await Course.findByIdAndUpdate(course_id, { $push: { grades: grades } },{ new: true });
         });
 
         await program.populate('students');
@@ -181,31 +179,23 @@ const removeStudentFromProgram = async (req, res) => {
         const { id } = req.params;
         const  studentId  = req.body.studentId;
 
-        // Logic to remove the program from the student in the database
-        const student = await Student.findById(studentId);
-        student.programs = student.programs.filter(program => program != id);
-        
-
+        // Logic to remove the program from the student in the database  
+        const student = await Student.findByIdAndUpdate(studentId, { $pull: { programs: id } },{ new: true });
+    
         // Logic to remove the student from the program in the database
-        const program = await Program.findById(id);
-        program.students = program.students.filter(student => student != studentId);
-        await program.save();
+        const program = await Program.findByIdAndUpdate(id, { $pull: { students: student._id } },{ new: true });
 
          // Logic to delete the grade for each course in the program in the database
         program.courses.forEach(async course_id => {
-            const course = await Course.findById(course_id);
-            const grade = await Grade.findOne({course: course._id, student: student._id});
-            
-            course.grades = course.grades.filter(grade => grade != grade._id);
-            student.grades = student.grades.filter(grade => grade != grade._id);
-            await grade.deleteOne();
-            await course.save();
+            const grade=await Grade.findOneAndDelete({course: course_id, student: student._id});
+            await Course.findByIdAndUpdate(course_id, { $pull: { grades: grade._id } },{ new: true });
+            await Student.findByIdAndUpdate(student._id, { $pull: { grades: grade._id } },{ new: true });
+
         });
-        await student.save();
 
-
-        // join students with programs
-        await program.populate('students');
+        // join students with programs and courses
+        await program.populate(['students','courses']);
+      
 
         // Return a success message as a response
         //res.status(200).json({ message: 'Student removed successfully' });
@@ -236,19 +226,24 @@ const addCourseToProgram = async (req, res) => {
         }
         await program.save();
 
-        // Logic to create the grades for the course in the database
-        program.students.forEach(async student => {
+
+        // Logic to create the grades for the course in the program in the database with promises
+        await Promise.all(program.students.map(async student => {
             const grade = await Grade.create({ grade: 0,course: newCourse._id, student: student._id});
             newCourse.grades.push(grade._id);
-        });
+            await Student.findByIdAndUpdate(student._id, { $push: { grades: grade._id } },{ new: true });
+        }));
         await newCourse.save();
+
+        // // Logic to create the grades for the course in the database
+        // program.students.forEach(async student => {
+        //     const grade = await Grade.create({ grade: 0,course: newCourse._id, student: student._id});
+        //     newCourse.grades.push(grade._id);
+        // });
+        // await newCourse.save();
         
         // join courses with programs
-        await program.populate({path:'courses',populate:'grades'});
-
-        console.log("newCourse",newCourse);
-
-        console.log("program",program);
+        await program.populate('courses');
 
         // Return the updated program as a response
         res.status(200).json(program);

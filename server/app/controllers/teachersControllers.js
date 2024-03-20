@@ -1,5 +1,6 @@
 // Import any necessary modules or dependencies
 const Teacher = require('../models/teacher');
+const Course = require('../models/course');
 // Define your async controller functions
 const getAllTeachers = async (req, res) => {
     try {
@@ -65,16 +66,11 @@ const removeCourseFromTeacher = async (req, res) => {
         const { teacherId } = req.params;
         const { courseId } = req.body;
 
+        // Logic to remove the teacher from the course
+        await Course.findByIdAndUpdate(courseId,{ $unset: { teacher: 1 } });
+
         // Logic to remove the course from the teacher in the database
-        const teacher = await Teacher.findById(teacherId);
-        teacher.courses.pull(courseId);
-        await teacher.save();
-
-        const course = await Course.findById(courseId);
-        course.teacher = undefined;
-        await course.save();
-
-        await teacher.populate('courses').execPopulate();
+        const teacher = await Teacher.findByIdAndUpdate(teacherId,{ $pull : {courses: courseId}}, { new: true }).populate('courses');
 
         // Return the updated teacher as a response
         res.status(200).json(teacher);

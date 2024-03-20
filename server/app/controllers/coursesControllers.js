@@ -1,6 +1,8 @@
 // Import any necessary modules or models
 const Course = require('../models/course');
+const Grade = require('../models/grade');
 const Program = require('../models/program');
+const Student = require('../models/student');
 const Teacher = require('../models/teacher');
 
 // Example async controller for getting all courses
@@ -104,20 +106,16 @@ const removeTeacherFromCourse = async (req, res) => {
         const courseId = req.params.id;
 
         // Logic to remove the teacher from the course
-        const course = await Course.findById(courseId);
-
-        const teacher = await Teacher.findById(course.teacher);
-        teacher.courses = teacher.courses.filter((course) => course != course.id);
-        await teacher.save();
-
-        course.teacher = undefined;
-        await course.save();
+        const course = await Course.findByIdAndUpdate(courseId,{ $unset: { teacher: 1 } }).populate({path:'grades',populate:'student'});
 
         // Logic to remove the course from the teacher
+        await Teacher.findByIdAndUpdate(course.teacher,{ $pull: { courses: course._id } },{ new: true });
 
+        course.teacher = undefined;
 
         // Send a success message as a response
-        res.status(200).json({ message: 'Teacher removed from the course successfully' });
+        //res.status(200).json({ message: 'Teacher removed from the course successfully' });
+        res.status(200).json(course);
     } catch (error) {
         // Handle any errors that occur during the process
         res.status(500).json({ error: 'Internal server error' });
@@ -129,21 +127,18 @@ const deleteCourse = async (req, res) => {
     try {
         const courseId = req.params.id;
 
-        const course = await Course.findById(courseId);
+        const course = await Course.findByIdAndDelete(courseId);
 
         // Logic to delete the course from the program
-        const program = await Program.findById(course.program);
-        program.courses = program.courses.filter((course) => course != courseId);
-        await program.save();
-
-        await course.deleteOne();
-
-        // Logic to delete the course from the database
-      //  await Course.findByIdAndDelete(courseId);
+        await Program.findByIdAndUpdate(course.program,{ $pull: { courses: courseId } },{ new: true });
+        await Teacher.findByIdAndUpdate(course.teacher,{ $pull: { courses: courseId } },{ new: true });
+        await Grade.deleteMany({course:courseId});
+        await Student.updateMany({grades:{$in:course.grades}},{ $pull: { grades: {$in:course.grades} } },{ new: true });
 
         // Send a success message as a response
         res.status(200).json({ message: 'Course deleted successfully' });
     } catch (error) {
+        console.log(error);
         // Handle any errors that occur during the process
         res.status(500).json({ error: 'Internal server error' });
     }

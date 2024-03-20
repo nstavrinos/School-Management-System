@@ -52,18 +52,17 @@ const createGrade = async (req, res) => {
 // Example controller for updating a grade
 const updateGrade = async (req, res) => {
     try {
-        // Extract the necessary data from the request body and parameters
-        // const { id } = req.params;
-        // const { name, score } = req.body;
+        // Extract the necessary data from the request parameters and body
+        const { id } = req.params;
 
         // Logic to update the grade in the database
-        // const updatedGrade = await Grade.findByIdAndUpdate(id, { name, score }, { new: true });
+        const updatedGrade = await Grade.findByIdAndUpdate(id,req.body, { new: true });
 
         // Return the updated grade as a response
-        // res.status(200).json(updatedGrade);
+        res.status(200).json(updatedGrade);
     } catch (error) {
         // Handle any errors that occur during the process
-        // res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 

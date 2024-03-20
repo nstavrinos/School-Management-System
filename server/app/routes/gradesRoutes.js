@@ -11,8 +11,8 @@ router.get('/:id', gradesController.getGradeById);
 // POST /grades
 router.post('/', gradesController.createGrade);
 
-// PUT /grades/:id
-router.put('/:id', gradesController.updateGrade);
+// PATCH /grades/:id
+router.patch('/:id', gradesController.updateGrade);
 
 // DELETE /grades/:id
 router.delete('/:id', gradesController.deleteGrade);

@@ -122,6 +122,40 @@ export function useUpdate(endpoint) {
         });
     }
 
+    export function useUpdateGrade(grade_id) {
+
+        const {course_id} = useParams()
+        const queryClient = useQueryClient();
+
+        const update = async(data) => {
+            try {
+                const response = await fetch(`${baseUrl}grades/${data.grade_id}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({"grade" : data.new_score}),
+                });
+                const responseData = await response.json();
+                return responseData;
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    
+        return useMutation({
+            mutationFn: update,
+            onSuccess: (data) => {
+                queryClient.invalidateQueries(["courses",course_id],{exact: true});
+            },
+            onError: (error) => {
+                console.error(error);
+            }
+        });
+    }
+
+
+
 export function useAddStudentToProgram() {
 
     const {id} = useParams();

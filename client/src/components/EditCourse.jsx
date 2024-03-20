@@ -100,7 +100,7 @@ export default function EditCourse() {
           </div>
         </div>
         </div>
-        <GradesList grades={getCourse?.data?.grades} headerInfo={"The Grades of the Students"}/>
+        <GradesList grades={getCourse?.data?.grades} mode="course" />
 
         </>
 

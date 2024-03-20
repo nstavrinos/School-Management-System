@@ -1,6 +1,8 @@
 // Import any necessary modules or models
 const Student = require('../models/student');
 const Program = require('../models/program');
+const Course = require('../models/course');
+const Grade = require('../models/grade');
 
 // Example controller for getting all students
 const getAllStudents = async (req, res) => {
@@ -22,7 +24,9 @@ const getStudentById = async (req, res) => {
         const studentId = req.params.id;
 
         // Logic to fetch the student from the database
-        const student = await Student.findById(studentId).populate('programs');
+        const student = await Student.findById(studentId).populate(['programs',{path:'grades',populate: { path:'course' , populate: 'teacher'}}]);
+
+        console.log("Student: ", student.grades);
 
         // Return the student as a response
         res.status(200).json(student);
@@ -74,26 +78,17 @@ const deleteStudent = async (req, res) => {
         const studentId = req.params.id;
 
         // Logic to find the student from the database
-        const student = await Student.findById(studentId);
+        const student = await Student.findByIdAndDelete(studentId);
 
         // If the student is not found, return an error message
         if (!student) {
             return res.status(404).json({ error: 'Student not found' });
         }
 
-        // If the student has programs, remove the student from the programs
-        if (student.programs.length > 0) {
-            student.programs.forEach(async (program) => {
-                await Program.findByIdAndUpdate(
-                    program,
-                    { $pull: { students: studentId } },
-                    { new: true }
-                );
-            });
-        }
-
-        // Logic to delete the student from the database
-        await student.deleteOne();
+        // Logic to remove the student from all programs and courses and delete all grades
+        await Program.updateMany({_id:{$in:student.programs}},{ $pull: { students: student._id } },{ new: true });
+        await Course.updateMany({grades:{$in:student.grades}},{ $pull: { grades: {$in:student.grades} } },{ new: true });
+        await Grade.deleteMany({student:student._id});
 
         // Return a success message as a response
         res.status(200).json({ message: 'Student deleted successfully' });
