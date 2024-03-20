@@ -13,6 +13,7 @@ import AddStudents from './components/AddStudents.jsx'
 import CreateTeacher from './components/CreateTeacher.jsx'
 import EditTeacher from './components/EditTeacher.jsx'
 import TeachersPage from './pages/TeachersPage.jsx'
+import Student from './components/Student.jsx'
 import App from './App.jsx'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
@@ -20,6 +21,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import CreateCourse from './components/CreateCourse.jsx'
 import AddTeacher from './components/AddTeacher.jsx'
+
+import '@mantine/core/styles.css';
+
+import { MantineProvider } from '@mantine/core';
 
 const BrowserRouter = createBrowserRouter([
   {
@@ -54,6 +59,9 @@ const BrowserRouter = createBrowserRouter([
               { path: '/students/:id', 
                 element: <EditStudent />,
               },
+              { path: '/students/edit/:id', 
+              element: <Student />,
+              },
               { path: '/students/create', 
                 element: <CreateStudent/>,
               },
@@ -84,7 +92,9 @@ const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
+    <MantineProvider  defaultColorScheme="dark">
       <RouterProvider router={BrowserRouter}/>
+    </MantineProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>,

@@ -12,7 +12,7 @@ export  default  function  GradesList ({grades, mode}) {
         return grades?.filter(grade => {
             return grade.student?.first_name?.toLowerCase().includes(query.toLowerCase()) 
                 || grade.student?.last_name?.toLowerCase().includes(query.toLowerCase()) 
-                || grade.grade.toString().includes(query.toLowerCase())
+                || grade.grade?.toString().includes(query.toLowerCase())
                 || grade.course?.course_name?.toLowerCase().includes(query.toLowerCase())
                 || grade.course?.teacher?.first_name?.toLowerCase().includes(query.toLowerCase())
                 || grade.course?.teacher?.last_name?.toLowerCase().includes(query.toLowerCase());
@@ -64,10 +64,10 @@ export  default  function  GradesList ({grades, mode}) {
                         return (
                             <tr key={grade._id}  className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
                                 <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                     {mode!=="student" ? grade.student.first_name : grade.course.course_name}
+                                     {mode!=="student" ? grade.student.first_name : grade.course?.course_name}
                                 </td>
                                 <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
-                                    {mode!=="student" ? grade.student.last_name : grade.course.teacher.first_name + " " + grade.course.teacher.last_name}
+                                    {mode!=="student" ? grade.student.last_name : grade.course?.teacher?.first_name + " " + grade.course?.teacher?.last_name}
                                 </td>
                                 <td className="p-4 align-middle [&amp;:has([role=checkbox])]:pr-0">
                                 { (editGrade.edit && editGrade.grade_id == grade._id ) ?  

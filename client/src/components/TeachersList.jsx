@@ -1,5 +1,5 @@
 import React ,{useMemo, useState}from 'react';
-import Teacher from './Teacher';
+import Teacher from './TeacherListItem';
 import { Link } from 'react-router-dom';
 
 export default function TeachersList({teachers, headerInfo, buttonLink, deleteFun}) {

@@ -1,5 +1,5 @@
 import React ,{useMemo, useState}from 'react';
-import Program from './Program';
+import Program from './ProgramListItem';
 import { Link } from 'react-router-dom';
 
 export default function ProgramsList({programs, headerInfo, buttonLink, deleteFun}) {
@@ -8,9 +8,9 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
 
   const filterPrograms = useMemo(() => {
       return programs?.filter((program) => {
-        return program.program_name.toLowerCase().includes(query.toLowerCase()) 
-              || program.begin.toLowerCase().includes(query.toLowerCase()) 
-              || program.end.toLowerCase().includes(query.toLowerCase());
+        return program.program_name?.toLowerCase().includes(query.toLowerCase()) 
+              || program.begin?.toLowerCase().includes(query.toLowerCase()) 
+              || program.end?.toLowerCase().includes(query.toLowerCase());
       });
     }, [query, programs]);
 

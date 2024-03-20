@@ -1,8 +1,8 @@
 import {useGetById, useUpdate, } from '../api/sharedAPI';
 import { useNavigate} from 'react-router-dom';
 import NotFoundPage from '../pages/NotFoundPage';
-import StudentForm from "./StudentForm";
-import ProgramsList from "./ProgramsList";
+import StudentForm from "./StudentForm2";
+import ProgramsList from "./ProgramsList2";
 import GradesList from './GradesList';
 
 export default function EditStudent() {
@@ -30,9 +30,9 @@ export default function EditStudent() {
 
     return (
         <>
-            <h3 className="text-lg font-semibold p-4">EDIT Student</h3>
+           
             {getStudent?.data && <StudentForm student={getStudent.data} submitText="Edit" submitAction={onSubmit} />}    
-            <ProgramsList programs={getStudent?.data?.programs} headerInfo="List of programs that the student is part of" buttonLink={''} deleteFun={studentRemoveFun}/>
+            <ProgramsList programs={getStudent?.data?.programs} headerInfo="Student Programs" buttonLink={''} deleteFun={studentRemoveFun}/>
             <GradesList grades={getStudent?.data?.grades} mode="student" />
         </>
 

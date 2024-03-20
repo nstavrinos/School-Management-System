@@ -138,15 +138,23 @@ const addStudentsToProgram = async (req, res) => {
         const program = await Program.findByIdAndUpdate(id, { $push: { students: { $each: students } } },{ new: true });
 
         // Logic to create the grades for each course in the program in the database with promises
-        program.courses.forEach(async course_id => { 
-            let grades = [];
+        if(program.courses.length > 0){
+            program.courses.forEach(async course_id => { 
+                let grades = [];
+                await Promise.all(students.map(async student_id => {
+                    const grade = await Grade.create({ grade: 0,course: course_id, student: student_id});
+                    grades.push(grade._id);
+                    const sd =await Student.findByIdAndUpdate(student_id, { $push: { grades: grade._id }},{ $push: {  programs: program._id } },{ new: true });
+                    console.log("sd",sd);
+                }));
+                await Course.findByIdAndUpdate(course_id, { $push: { grades: grades } },{ new: true });
+            });
+        }
+        else{
             await Promise.all(students.map(async student_id => {
-                const grade = await Grade.create({ grade: 0,course: course_id, student: student_id});
-                grades.push(grade._id);
-                await Student.findByIdAndUpdate(student_id, { $push: { grades: grade._id , programs: program._id } },{ new: true });
-            }));
-            await Course.findByIdAndUpdate(course_id, { $push: { grades: grades } },{ new: true });
-        });
+                const sd =await Student.findByIdAndUpdate(student_id, { $push: {  programs: program._id } },{ new: true });
+                console.log("sd2",sd);
+            }));}
 
         await program.populate('students');
 

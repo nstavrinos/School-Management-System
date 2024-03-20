@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Course from './Course';
+import Course from './CourseListItem';
 
 
 export  default  function  CoursesList ({courses, headerInfo , buttonLink, buttonInfo ,deleteFun}) {
@@ -75,7 +75,7 @@ export  default  function  CoursesList ({courses, headerInfo , buttonLink, butto
                     </th>
                   </tr>
                 </thead>
-                <tbody className="[&amp;_tr:last-child]:border-0">
+                <tbody className="[&amp;_tr:last-child]:border-0 ">
                   {coursesList()}
                 </tbody>
               </table>
