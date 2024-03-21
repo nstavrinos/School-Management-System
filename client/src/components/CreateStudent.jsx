@@ -1,7 +1,7 @@
 import {useCreate, useAddStudentToProgram} from '../api/sharedAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import NotFoundPage from '../pages/NotFoundPage';
-import StudentForm from "./StudentForm";
+import StudentForm from "./StudentForm2";
 
 export default function CreateStudent() {
     const navigateTo = useNavigate();
@@ -15,14 +15,10 @@ export default function CreateStudent() {
    };
 
    if(createStudent.isError){
-   return <NotFoundPage/>
+        return <NotFoundPage/>
    }
 
    return (
-       <>
-           <h3 className="text-lg font-semibold p-4">"Create Student"</h3>
-           <StudentForm submitText="Create" submitAction={onSubmit} />    
-       </>
-
+        <StudentForm submitText="Create" submitAction={onSubmit} />    
    );
 }

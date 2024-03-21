@@ -3,17 +3,15 @@ import { useForm, isEmail, isInRange, hasLength } from '@mantine/form';
 import { Button,TextInput, NumberInput, Box, Grid,  Text, Title ,Card  } from '@mantine/core';
 import '@mantine/core/styles/Grid.css';
 
-
-
-export default function StudentForm({ student, submitText, submitAction }) {
+export default function TeacherForm({ teacher, submitText, submitAction }) {
 
     const form = useForm({
         initialValues: {
-            first_name: student?.first_name || "",
-            last_name:  student?.last_name || "",
-            phone:  student?.phone || "",
-            email:  student?.email || "",
-            age:  student?.age || 18
+            first_name: teacher?.first_name || "",
+            last_name: teacher?.last_name || "",
+            phone: teacher?.phone || "",
+            email: teacher?.email || "",
+            courses: teacher?.courses || []
         },
     
         validate: {
@@ -21,37 +19,33 @@ export default function StudentForm({ student, submitText, submitAction }) {
           last_name: hasLength({ min: 2, max: 20 }, 'Last Name must be 2-20 characters long'),
           phone: hasLength({ min: 10, max: 10 }, 'Phone must be 10 digits long'),
           email: isEmail('Invalid email'),
-          age: isInRange({ min: 18, max: 99 }, 'You must be 18-99 years old to register'),
         },
       });
 
-    const averageScore = useMemo(() => {return student?.grades.reduce((acc, grade) => acc + grade.grade, 0) / student?.grades.length;}, [student?.grades]);
-    
+    const coursesDuration = useMemo(() => teacher?.courses.reduce((acc, course) => acc + course.duration, 0), [teacher?.courses]);
+
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
             <Card.Section inheritPadding mt="sm" pb="md">
-                <Title order={1}>Student Information</Title>
+                <Title order={1}>Teacher Information</Title>
             </Card.Section>
             <Card.Section inheritPadding mt="sm" pb="md">
                 <Grid  spacing="xl"  columns={24}>
                     <Grid.Col span={{ base: 24, md: 8, lg: 6 }} >
                         <Box p="lg" >
-                                <Title order={2}>Student Statistics</Title>
+                                <Title order={2}>Teacher Statistics</Title>
                         
                                 <Text fw={500} mt="lg">
-                                    Number of programs:  &emsp;<strong>{student?.programs.length} </strong>
+                                    Number of courses:  &emsp;<strong>{teacher?.courses.length} </strong>
                                 </Text>
                                 <Text fw={500} mt="lg">
-                                    Number of courses:  &emsp;<strong>{student?.grades.length} </strong>
-                                </Text>
-                                <Text fw={500} mt="lg">
-                                    Average score per course:  &emsp;<strong>{averageScore?.toString().slice(0,4)|| 0} </strong>
+                                    Sum of courses duration:  &emsp;<strong>{coursesDuration} </strong>
                                 </Text>
                         </Box>  
                     </Grid.Col>
                     <Grid.Col span={{ base: 24, md: 16, lg: 18 }} >
                         <Box component="form" maw={400} mx="auto"   p="lg" onSubmit={form.onSubmit(submitAction)} >
-                            <Title order={2}>Student Details</Title>
+                            <Title order={2}>Teacher Details</Title>
                             <TextInput 
                                 label="First Name" 
                                 placeholder="First Name" 
@@ -79,13 +73,6 @@ export default function StudentForm({ student, submitText, submitAction }) {
                                 withAsterisk
                                 mt="md"
                                 {...form.getInputProps('email')}
-                            />
-                            <NumberInput
-                                label="Your age"
-                                placeholder="Your age"
-                                withAsterisk
-                                mt="md"
-                                {...form.getInputProps('age')}
                             />
                             <Button type="submit"variant="filled" color="violet" size="md" justify="center" fullWidth mt="md">Submit</Button>
                         </Box>

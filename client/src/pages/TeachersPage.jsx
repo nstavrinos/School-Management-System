@@ -1,5 +1,5 @@
 import React from 'react';
-import TeachersList from '../components/TeachersList';
+import TeachersList from '../components/TeachersList2';
 import { useGetAll, useDelete } from '../api/sharedAPI';
 
 

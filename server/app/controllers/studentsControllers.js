@@ -24,7 +24,7 @@ const getStudentById = async (req, res) => {
         const studentId = req.params.id;
 
         // Logic to fetch the student from the database
-        const student = await Student.findById(studentId).populate(['programs',{path:'grades',populate: { path:'course' , populate: 'teacher'}}]);
+        const student = await Student.findById(studentId).populate(['programs',{path:'grades',populate: { path:'course' , populate: ['teacher','program']}}]);
 
         console.log("Student: ", student.grades);
 

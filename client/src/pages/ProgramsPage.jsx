@@ -1,5 +1,5 @@
 import React from 'react';
-import ProgramsList from '../components/ProgramsList';
+import ProgramsList from '../components/ProgramsList2';
 import { useGetAll, useDelete } from '../api/sharedAPI';
 
 

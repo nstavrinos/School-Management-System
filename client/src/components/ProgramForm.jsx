@@ -2,12 +2,12 @@ import {  useForm } from 'react-hook-form';
 
 export default function ProgramForm({ program, submitText, submitAction }) {
 
-    const {register,handleSubmit,formState: { errors, isSubmitting }} = useForm(  {defaultValues: {
-        program_name: program?.program_name || "",
-        begin:  program?.begin.slice(0,10) || new Date().toISOString().slice(0,10),
-        end: program?.end.slice(0,10) || new Date().toISOString().slice(0,10),
-        students: program?.students || []
-    }});
+  const {register,handleSubmit,formState: { errors, isSubmitting }} = useForm(  {defaultValues: {
+      program_name: program?.program_name || "",
+      begin:  program?.begin.slice(0,10) || new Date().toISOString().slice(0,10),
+      end: program?.end.slice(0,10) || new Date().toISOString().slice(0,10),
+      students: program?.students || []
+  }});
 
   return (
     <form

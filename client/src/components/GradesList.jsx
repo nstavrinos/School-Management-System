@@ -5,7 +5,7 @@ export  default  function  GradesList ({grades, mode}) {
 
     const [query, setQuery] = useState('');
     const [editGrade, setEditGrade] = useState({grade_id: '', value: 0,edit: false});
-    const headerInfo = (mode === "student" ) ? "List of grades for the student" : "List of grades for the course" ;
+    const headerInfo = (mode === "student" ) ? "Student Grades" : "List of grades for the course" ;
     const updateGrade = useUpdateGrade();
 
     const filteredGradesByStudentName = useMemo( () => {

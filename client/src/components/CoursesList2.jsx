@@ -1,39 +1,41 @@
-import React ,{useMemo, useState}from 'react';
-import Program from './ProgramListItem2';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Course from './CourseListItem2';
 import { Card, Title, Grid, Table, TextInput, Button } from '@mantine/core';
 
-export default function ProgramsList({programs, headerInfo, buttonLink, deleteFun}) {
-  
+
+export  default  function  CoursesList ({courses, headerInfo , buttonLink, buttonInfo ,deleteFun}) {
+
   const [query, setQuery] = useState('');
+  
 
-  const filterPrograms = useMemo(() => {
-      return programs?.filter((program) => {
-        return program.program_name.toLowerCase().includes(query.toLowerCase()) 
-              || program.begin.toLowerCase().includes(query.toLowerCase()) 
-              || program.end.toLowerCase().includes(query.toLowerCase());
-      });
-    }, [query, programs]);
+  const filteredCourses = useMemo( () => {
+      return courses?.filter(course => {
+        return course.course_name?.toLowerCase().includes(query.toLowerCase()) 
+              || course.duration?.toLowerCase().includes(query.toLowerCase()) 
+      })
+  }, [query, courses])
 
-   // This method will map out the records on the table
-    function programsList() {
-        if (filterPrograms?.length === 0) {
-            return <Table.Tr><Table.Td>No Program found</Table.Td></Table.Tr>;
+    function coursesList() {
+
+        if (filteredCourses?.length === 0) {
+            return <Table.Tr><Table.Td>No Course found</Table.Td></Table.Tr>;
+
         }
 
-
-      return filterPrograms.map((program) => {
-        return (
-          <Program
-            program={program}
-            deleteFun={deleteFun}
-            key={program._id}
-          />
-        );
-      });
+        return filteredCourses?.map((course) => {
+            return (
+                <Course
+                    key={course._id}
+                    course={course}
+                    deleteFun={deleteFun}
+                    buttonInfo={buttonInfo}
+                    
+                />
+            );
+        });
     }
 
-    // This following section will display the table with the records of individuals.
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
             <Card.Section inheritPadding mt="sm" pb="md">
@@ -57,7 +59,7 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
                                 to={buttonLink}
                                 className= "hover:text-pink-500"
                                 >
-                                Add New Program
+                                Add Course
                             </Link>
                         </Button>
                     </Grid.Col>
@@ -68,16 +70,18 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
                     <Table striped highlightOnHover withTableBorder    stickyHeader  >
                         <Table.Thead>
                         <Table.Tr bg='gray'>
-                            <Table.Th> Name of the program</Table.Th>
-                            <Table.Th> Start Date</Table.Th>
-                            <Table.Th> End Date</Table.Th>
+                            <Table.Th>Course Name</Table.Th>
+                            <Table.Th> Duration</Table.Th>
                             <Table.Th w={300}>Actions</Table.Th>
                         </Table.Tr>
                         </Table.Thead>
-                        <Table.Tbody>{programsList()}</Table.Tbody>
+                        <Table.Tbody>{coursesList()}</Table.Tbody>
                     </Table>
                 </Table.ScrollContainer>
             </Card.Section>
         </Card>
-    );
-  }
+      );
+
+
+
+}

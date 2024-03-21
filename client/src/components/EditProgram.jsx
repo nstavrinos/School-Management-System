@@ -1,9 +1,10 @@
-import ProgramForm from "./ProgramForm";
+import ProgramForm from "./ProgramForm2";
 import { useGetById,useUpdate,useRemoveStudentFromProgram,useDelete} from '../api/sharedAPI';
 import { useNavigate } from 'react-router-dom';
-import StudentsList from './StudentsList';
+import StudentsList from './StudentsList2';
 import NotFoundPage from '../pages/NotFoundPage';
-import CoursesList from "./CoursesList";
+import CoursesList from "./CoursesList2";
+import {Grid} from '@mantine/core';
 
 export default function EditProgram() {
 
@@ -31,12 +32,16 @@ export default function EditProgram() {
     }
 
     return (
-        <>
-            <h3 className="text-lg font-semibold p-4">"EDIT Program"</h3>
-            {getProgram?.data && <ProgramForm program={getProgram?.data} submitText="Edit" submitAction={onSubmit} />}    
+        <Grid  spacing="lg">
+            <Grid.Col span={12} >
+                {getProgram?.data && <ProgramForm program={getProgram?.data} submitText="Edit" submitAction={onSubmit} />}  
+            </Grid.Col>
+            <Grid.Col span={12} >
             <StudentsList students={getProgram?.data?.students} headerInfo="List of Students that are part of this program" buttonLink={`/programs/addStudentsToProgram/${getProgram?.data?._id}`} deleteFun={studentRemoveFun}/>
-            <CoursesList courses={getProgram?.data?.courses} headerInfo="List of Courses" buttonLink={`/programs/addCourseToProgram/${getProgram?.data?._id}`} buttonInfo='Delete' deleteFun={courseDelFun}/>
-        </>
-
+            </Grid.Col>
+            <Grid.Col span={12} >
+                <CoursesList courses={getProgram?.data?.courses} headerInfo="List of Courses" buttonLink={`/programs/addCourseToProgram/${getProgram?.data?._id}`} buttonInfo='Delete' deleteFun={courseDelFun}/>
+            </Grid.Col>
+        </Grid>
     );
 }

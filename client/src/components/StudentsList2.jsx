@@ -1,39 +1,40 @@
-import React ,{useMemo, useState}from 'react';
-import Program from './ProgramListItem2';
+import React, { useMemo, useState } from 'react';
+import Student from './StudentListItem2';
 import { Link } from 'react-router-dom';
 import { Card, Title, Grid, Table, TextInput, Button } from '@mantine/core';
 
-export default function ProgramsList({programs, headerInfo, buttonLink, deleteFun}) {
-  
+export  default  function  StudentsList ({students, headerInfo , buttonLink, deleteFun}) {
+
   const [query, setQuery] = useState('');
+  
 
-  const filterPrograms = useMemo(() => {
-      return programs?.filter((program) => {
-        return program.program_name.toLowerCase().includes(query.toLowerCase()) 
-              || program.begin.toLowerCase().includes(query.toLowerCase()) 
-              || program.end.toLowerCase().includes(query.toLowerCase());
-      });
-    }, [query, programs]);
+  const filteredStudents = useMemo( () => {
+      return students?.filter(student => {
+        return student.first_name?.toLowerCase().includes(query.toLowerCase()) 
+              || student.last_name?.toLowerCase().includes(query.toLowerCase()) 
+              || student.phone?.toLowerCase().includes(query.toLowerCase())
+      })
+  }, [query, students])
 
-   // This method will map out the records on the table
-    function programsList() {
-        if (filterPrograms?.length === 0) {
-            return <Table.Tr><Table.Td>No Program found</Table.Td></Table.Tr>;
+    function studentsList() {
+
+        if (filteredStudents?.length === 0) {
+            return <Table.Tr><Table.Td>No Student found</Table.Td></Table.Tr>;
+
         }
 
-
-      return filterPrograms.map((program) => {
-        return (
-          <Program
-            program={program}
-            deleteFun={deleteFun}
-            key={program._id}
-          />
-        );
-      });
+        return filteredStudents?.map((student) => {
+            return (
+                <Student
+                    key={student._id}
+                    student={student}
+                    deleteFun={deleteFun}
+                    
+                />
+            );
+        });
     }
 
-    // This following section will display the table with the records of individuals.
     return (
         <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
             <Card.Section inheritPadding mt="sm" pb="md">
@@ -57,7 +58,7 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
                                 to={buttonLink}
                                 className= "hover:text-pink-500"
                                 >
-                                Add New Program
+                                Add Student
                             </Link>
                         </Button>
                     </Grid.Col>
@@ -68,16 +69,19 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
                     <Table striped highlightOnHover withTableBorder    stickyHeader  >
                         <Table.Thead>
                         <Table.Tr bg='gray'>
-                            <Table.Th> Name of the program</Table.Th>
-                            <Table.Th> Start Date</Table.Th>
-                            <Table.Th> End Date</Table.Th>
+                            <Table.Th>First Name</Table.Th>
+                            <Table.Th>Last Name</Table.Th>
+                            <Table.Th> Phone</Table.Th>
                             <Table.Th w={300}>Actions</Table.Th>
                         </Table.Tr>
                         </Table.Thead>
-                        <Table.Tbody>{programsList()}</Table.Tbody>
+                        <Table.Tbody>{studentsList()}</Table.Tbody>
                     </Table>
                 </Table.ScrollContainer>
             </Card.Section>
         </Card>
-    );
-  }
+      );
+
+
+
+}

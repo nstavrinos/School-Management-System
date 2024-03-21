@@ -1,6 +1,6 @@
 import React from 'react';
 import { useGetAll, useDelete } from '../api/sharedAPI';
-import StudentsList from '../components/StudentsList';
+import StudentsList from '../components/StudentsList2';
 
 
 export default function StudentsPage() {

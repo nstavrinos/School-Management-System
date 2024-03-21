@@ -23,6 +23,7 @@ import CreateCourse from './components/CreateCourse.jsx'
 import AddTeacher from './components/AddTeacher.jsx'
 
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 
 import { MantineProvider } from '@mantine/core';
 

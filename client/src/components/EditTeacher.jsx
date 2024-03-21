@@ -1,8 +1,9 @@
-import TeacherForm from "./TeacherForm";
+import TeacherForm from "./TeacherForm2";
 import { useGetById,useUpdate,useRemoveCourseFromTeacher} from '../api/sharedAPI';
 import { useNavigate } from 'react-router-dom';
 import NotFoundPage from '../pages/NotFoundPage';
-import CoursesList from "./CoursesList";
+import CoursesList from "./CoursesList2";
+import {Grid} from '@mantine/core';
 
 export default function EditTeacher() {
 
@@ -25,11 +26,14 @@ export default function EditTeacher() {
     }
 
     return (
-        <>
-            <h3 className="text-lg font-semibold p-4">"EDIT Teacher"</h3>
-            {getTeacher?.data && <TeacherForm teacher={getTeacher?.data} submitText="Edit" submitAction={onSubmit} />}    
-            <CoursesList courses={getTeacher?.data?.courses} headerInfo="List of Courses" buttonLink={''} buttonInfo='Remove'deleteFun={removeCourseFun} />
-        </>
+            <Grid  spacing="lg">
+                <Grid.Col span={12} >
+                    {getTeacher?.data && <TeacherForm teacher={getTeacher?.data} submitText="Edit" submitAction={onSubmit} />} 
+                </Grid.Col>
+                <Grid.Col span={12} >
+                    <CoursesList courses={getTeacher?.data?.courses} headerInfo="List of Courses" buttonLink={''} buttonInfo='Remove'deleteFun={removeCourseFun} />
+                </Grid.Col>
+            </Grid>
 
     );
 }

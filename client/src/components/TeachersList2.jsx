@@ -1,40 +1,42 @@
 import React ,{useMemo, useState}from 'react';
-import Program from './ProgramListItem2';
+import Teacher from './TeacherListItem2';
 import { Link } from 'react-router-dom';
 import { Card, Title, Grid, Table, TextInput, Button } from '@mantine/core';
 
-export default function ProgramsList({programs, headerInfo, buttonLink, deleteFun}) {
-  
-  const [query, setQuery] = useState('');
+export default function TeachersList({teachers, headerInfo, buttonLink, deleteFun}) {
 
-  const filterPrograms = useMemo(() => {
-      return programs?.filter((program) => {
-        return program.program_name.toLowerCase().includes(query.toLowerCase()) 
-              || program.begin.toLowerCase().includes(query.toLowerCase()) 
-              || program.end.toLowerCase().includes(query.toLowerCase());
-      });
-    }, [query, programs]);
+    const [query, setQuery] = useState('');
+    
+    const filterTeachers = useMemo(() => {
+        return teachers?.filter((teacher) => {
+            return teacher.first_name.toLowerCase().includes(query.toLowerCase()) 
+                || teacher.last_name.toLowerCase().includes(query.toLowerCase()) 
+                || teacher.phone.toLowerCase().includes(query.toLowerCase());
+        });
+        }, [query, teachers]);
+    
+     // This method will map out the records on the table
+        function teachersList() {
+    
+            if (filterTeachers?.length === 0) {
+                return <Table.Tr><Table.Td>No Teacher found</Table.Td></Table.Tr>;
+            }
 
-   // This method will map out the records on the table
-    function programsList() {
-        if (filterPrograms?.length === 0) {
-            return <Table.Tr><Table.Td>No Program found</Table.Td></Table.Tr>;
+        return filterTeachers?.map((teacher) => {
+            return (
+                <Teacher
+                teacher={teacher}
+                deleteFun={deleteFun}
+                key={teacher._id}
+                />
+            );
         }
-
-
-      return filterPrograms.map((program) => {
-        return (
-          <Program
-            program={program}
-            deleteFun={deleteFun}
-            key={program._id}
-          />
         );
-      });
     }
 
     // This following section will display the table with the records of individuals.
     return (
+
         <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
             <Card.Section inheritPadding mt="sm" pb="md">
                 <Grid  spacing="xl"  columns={24}>
@@ -57,7 +59,7 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
                                 to={buttonLink}
                                 className= "hover:text-pink-500"
                                 >
-                                Add New Program
+                                Add Teacher
                             </Link>
                         </Button>
                     </Grid.Col>
@@ -68,16 +70,17 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
                     <Table striped highlightOnHover withTableBorder    stickyHeader  >
                         <Table.Thead>
                         <Table.Tr bg='gray'>
-                            <Table.Th> Name of the program</Table.Th>
-                            <Table.Th> Start Date</Table.Th>
-                            <Table.Th> End Date</Table.Th>
+                            <Table.Th>First Name</Table.Th>
+                            <Table.Th>Last Name</Table.Th>
+                            <Table.Th>Phone</Table.Th>
+                            <Table.Th>Number of Courses</Table.Th>
                             <Table.Th w={300}>Actions</Table.Th>
                         </Table.Tr>
                         </Table.Thead>
-                        <Table.Tbody>{programsList()}</Table.Tbody>
+                        <Table.Tbody>{teachersList()}</Table.Tbody>
                     </Table>
                 </Table.ScrollContainer>
             </Card.Section>
         </Card>
     );
-  }
+}

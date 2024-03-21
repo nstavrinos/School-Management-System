@@ -1,4 +1,4 @@
-import TeacherForm from "./TeacherForm";
+import TeacherForm from "./TeacherForm2";
 import {useCreate} from '../api/sharedAPI';
 import { useNavigate } from 'react-router-dom';
 import NotFoundPage from '../pages/NotFoundPage';
@@ -15,14 +15,10 @@ export default function CreateTeacher() {
         };
     
         if( createTeacher.isError){
-        return <NotFoundPage/>
+            return <NotFoundPage/>
         }
     
         return (
-            <>
-                <h3 className="text-lg font-semibold p-4">"Create Teacher"</h3>
-                <TeacherForm submitText="Create" submitAction={onSubmit} />    
-            </>
-    
+            <TeacherForm submitText="Create" submitAction={onSubmit} />    
         );
 }
