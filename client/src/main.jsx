@@ -4,23 +4,19 @@ import NotFoundPage from './pages/NotFoundPage.jsx'
 import HomePage from './pages/HomePage.jsx'
 import ProgramsPage from './pages/ProgramsPage.jsx'
 import StudentsPage from './pages/StudentsPage.jsx'
-import CreateProgam from './components/CreateProgram.jsx'
-import CreateStudent from './components/CreateStudent.jsx'
-import EditProgram from './components/EditProgram.jsx'
-import EditStudent from './components/EditStudent.jsx'
-import EditCourse from './components/EditCourse.jsx'
-import AddStudents from './components/AddStudents.jsx'
-import CreateTeacher from './components/CreateTeacher.jsx'
-import EditTeacher from './components/EditTeacher.jsx'
+import StudentPage from './pages/StudentPage.jsx'
+import ProgramPage from './pages/ProgramPage.jsx'
+import AddStudents from './components/Students/AddStudents.jsx'
+import AddTeacher from './components/Teachers/AddTeacher.jsx'
 import TeachersPage from './pages/TeachersPage.jsx'
-import Student from './components/Student.jsx'
+import TeacherPage from './pages/TeacherPage.jsx'
+import CoursesPage from './pages/CoursesPage.jsx'
+import CoursePage from './pages/CoursePage.jsx'
 import App from './App.jsx'
 import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-import CreateCourse from './components/CreateCourse.jsx'
-import AddTeacher from './components/AddTeacher.jsx'
 
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
@@ -40,43 +36,28 @@ const BrowserRouter = createBrowserRouter([
                 element: <ProgramsPage/>,
               },
               { path: '/programs/:id', 
-                element: <EditProgram />,
-              },
-              { path: '/programs/create', 
-              element: <CreateProgam/>,
-              },
-              { path: '/programs/addStudentToProgram/:id', 
-                element: <CreateStudent/>,
+                element: <ProgramPage />,
               },
               { path: '/programs/addStudentsToProgram/:id', 
                 element: <AddStudents/>,
-              },
-              { path: '/programs/addCourseToProgram/:id', 
-                element: <CreateCourse/>,
               },
               { path: '/students',
                 element: <StudentsPage/>
               },
               { path: '/students/:id', 
-                element: <EditStudent />,
+                element: <StudentPage />,
               },
-              { path: '/students/edit/:id', 
-              element: <Student />,
-              },
-              { path: '/students/create', 
-                element: <CreateStudent/>,
-              },
+              { path: '/courses', 
+                element: <CoursesPage/>,
+              },             
               { path: '/courses/:id', 
-                element: <EditCourse/>,
+                element: <CoursePage/>,
               },
               { path: '/teachers',
                 element: <TeachersPage/>
               },
               { path: '/teachers/:id', 
-                element: <EditTeacher />,
-              },
-              { path: '/teachers/create', 
-                element: <CreateTeacher/>,
+                element: <TeacherPage />,
               },
               { path: '/programs/addTeacherToCourse/:id', 
               element: <AddTeacher/>,

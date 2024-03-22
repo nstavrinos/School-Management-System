@@ -1,7 +1,6 @@
 import React from 'react';
 import { useGetAll, useDelete } from '../api/sharedAPI';
-import StudentsList from '../components/StudentsList2';
-
+import StudentsList from '../components/Students/StudentsList';
 
 export default function StudentsPage() {
 
@@ -15,8 +14,6 @@ export default function StudentsPage() {
         return <div>An error has occurred: {error.message}</div>;
     }
     return (
-       
         <StudentsList students={students} headerInfo="Students" buttonLink={"/students/create"} deleteFun={deleteFun} />
-   
     );
     }

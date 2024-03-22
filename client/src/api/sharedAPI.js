@@ -160,6 +160,7 @@ export function useAddStudentToProgram() {
 
     const {id} = useParams();
     const queryClient = useQueryClient();
+    console.log("ID:",id);
 
     const addStudentToProgram = async(data) => {
         try {

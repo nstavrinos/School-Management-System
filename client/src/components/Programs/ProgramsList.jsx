@@ -1,11 +1,13 @@
 import React ,{useMemo, useState}from 'react';
-import Program from './ProgramListItem2';
-import { Link } from 'react-router-dom';
-import { Card, Title, Grid, Table, TextInput, Button } from '@mantine/core';
+import Program from './ProgramListItem';
+import { Card, Title, Grid, Table, TextInput, Button, Modal } from '@mantine/core';
+import { useDisclosure} from '@mantine/hooks';
+import ProgramForm from './ProgramForm';
 
 export default function ProgramsList({programs, headerInfo, buttonLink, deleteFun}) {
   
   const [query, setQuery] = useState('');
+  const [opened, { open, close }] = useDisclosure(false);
 
   const filterPrograms = useMemo(() => {
       return programs?.filter((program) => {
@@ -35,6 +37,10 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
 
     // This following section will display the table with the records of individuals.
     return (
+        <>
+      <Modal opened={opened} onClose={close} title="Create Program" centered >
+        <ProgramForm submitText={"Create"}/>
+      </Modal>
         <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
             <Card.Section inheritPadding mt="sm" pb="md">
                 <Grid  spacing="xl"  columns={24}>
@@ -45,20 +51,15 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
                         <TextInput
                             radius="xl"
                             size="md"
-                            w={400}
+                            w='auto'
                             placeholder="Search..."
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                         />
                     </Grid.Col>
                     <Grid.Col span={{ base: 12, md: 8, lg: 6 }} align='end' >
-                        <Button variant="filled" color="violet" size="md"  > 
-                            <Link
-                                to={buttonLink}
-                                className= "hover:text-pink-500"
-                                >
-                                Add New Program
-                            </Link>
+                        <Button variant="filled" color="violet" size="md" onClick={open}>
+                          Add New Program
                         </Button>
                     </Grid.Col>
                 </Grid>
@@ -79,5 +80,6 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
                 </Table.ScrollContainer>
             </Card.Section>
         </Card>
+        </>
     );
   }

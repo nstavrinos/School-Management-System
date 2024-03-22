@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import { Table, Group, Button, NumberInput } from '@mantine/core';
-import { useUpdateGrade } from '../api/sharedAPI';
+import { useUpdateGrade } from '../../api/sharedAPI';
 
 export default function Grade  ({grade,mode}) {
 

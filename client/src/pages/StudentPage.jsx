@@ -1,13 +1,11 @@
 import {useGetById, useUpdate, } from '../api/sharedAPI';
-import { useNavigate} from 'react-router-dom';
-import NotFoundPage from '../pages/NotFoundPage';
-import StudentForm from "./StudentForm2";
-import ProgramsList from "./ProgramsList2";
-import GradesList from './GradesList2';
+import NotFoundPage from './NotFoundPage';
+import ProgramsList from "../components/Programs/ProgramsList";
+import GradesList from '../components/Grades/GradesList';
 import {Grid} from '@mantine/core';
+import EditStudent from '../components/Students/EditStudent';
 
-export default function EditStudent() {
-    const navigateTo = useNavigate();
+export default function StudentPage() {
 
     const getStudent= useGetById("students");
     const updateStudent = useUpdate("students");
@@ -16,23 +14,18 @@ export default function EditStudent() {
         console.log("Student ID: ", studentId);
     }
 
-    const onSubmit = async (data) => {
-        updateStudent.mutate(data);
-        navigateTo(-1);
-    };
-
     if(getStudent.isError || updateStudent.isError){
-    return <NotFoundPage/>
+        return <NotFoundPage/>
     }
 
-    if(getStudent.isLoading){
+    if(getStudent.isLoading || getStudent.data === undefined){
         return <p>Loading...</p>
     }
 
     return (
             <Grid  spacing="lg">
                 <Grid.Col span={12} >
-                    {getStudent?.data && <StudentForm student={getStudent.data} submitText="Edit" submitAction={onSubmit} />}    
+                   <EditStudent student={getStudent.data}/>   
                 </Grid.Col>
                 <Grid.Col span={12} >
                      <ProgramsList programs={getStudent?.data?.programs} headerInfo="Student Programs" buttonLink={''} deleteFun={studentRemoveFun}/>

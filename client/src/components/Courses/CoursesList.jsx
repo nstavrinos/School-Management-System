@@ -1,13 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import Course from './CourseListItem2';
-import { Card, Title, Grid, Table, TextInput, Button } from '@mantine/core';
+import Course from './CourseListItem';
+import { Card, Title, Grid, Table, TextInput, Button, Modal } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import CourseForm from './CourseForm';
 
 
 export  default  function  CoursesList ({courses, headerInfo , buttonLink, buttonInfo ,deleteFun}) {
 
   const [query, setQuery] = useState('');
-  
+  const [opened, { open, close }] = useDisclosure(false);
 
   const filteredCourses = useMemo( () => {
       return courses?.filter(course => {
@@ -37,6 +38,10 @@ export  default  function  CoursesList ({courses, headerInfo , buttonLink, butto
     }
 
     return (
+        <>
+        <Modal opened={opened} onClose={close} title="Create Course" centered >
+          <CourseForm submitText={"Create"}/>
+        </Modal>
         <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
             <Card.Section inheritPadding mt="sm" pb="md">
                 <Grid  spacing="xl"  columns={24}>
@@ -47,22 +52,17 @@ export  default  function  CoursesList ({courses, headerInfo , buttonLink, butto
                         <TextInput
                             radius="xl"
                             size="md"
-                            w={400}
+                            w='auto'
                             placeholder="Search..."
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                         />
                     </Grid.Col>
-                    <Grid.Col span={{ base: 12, md: 8, lg: 6 }} align='end' >
-                        <Button variant="filled" color="violet" size="md"  > 
-                            <Link
-                                to={buttonLink}
-                                className= "hover:text-pink-500"
-                                >
-                                Add Course
-                            </Link>
+                    {buttonLink && <Grid.Col span={{ base: 12, md: 8, lg: 6 }} align='end' >
+                        <Button variant="filled" color="violet" size="md" onClick={open}> 
+                            Add New Course
                         </Button>
-                    </Grid.Col>
+                    </Grid.Col>}
                 </Grid>
             </Card.Section>
             <Card.Section inheritPadding mt="sm" pb="md"> 
@@ -80,8 +80,6 @@ export  default  function  CoursesList ({courses, headerInfo , buttonLink, butto
                 </Table.ScrollContainer>
             </Card.Section>
         </Card>
-      );
-
-
-
+        </>
+    );
 }
