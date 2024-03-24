@@ -1,4 +1,4 @@
-import {useGetById,useRemovoTeacherFromCourse} from '../api/sharedAPI';
+import {useGetById,useRemoveTeacherFromCourse} from '../api/sharedAPI';
 import NotFoundPage from './NotFoundPage';
 import EditCourse from '../components/Courses/EditCourse';
 import GradesList from '../components/Grades/GradesList';
@@ -8,7 +8,7 @@ import {Grid} from '@mantine/core';
 export default function CoursePage() {
  
     const getCourse= useGetById("courses");
-    const removeTeacher = useRemovoTeacherFromCourse();
+    const removeTeacher = useRemoveTeacherFromCourse();
 
     const teacherRemoveFun = async () => {
         removeTeacher.mutate();
@@ -28,7 +28,7 @@ export default function CoursePage() {
                <EditCourse course={getCourse.data}/>
             </Grid.Col>
             <Grid.Col span={12} >
-              <TeachersList teachers={[getCourse.data?.teacher]} headerInfo="Course Teacher" buttonLink={`/programs/addTeacherToCourse/${getCourse?.data?._id}`} deleteFun={teacherRemoveFun} />
+              <TeachersList teachers={[getCourse.data?.teacher]} headerInfo="Course Teacher" modalInfo="Select 1 Teacher to add to the course" deleteFun={teacherRemoveFun} />
             </Grid.Col>
             <Grid.Col span={12} >
               <GradesList grades={getCourse?.data?.grades} mode="course" />

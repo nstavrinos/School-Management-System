@@ -1,14 +1,15 @@
 import React ,{useMemo, useState}from 'react';
 import Teacher from './TeacherListItem';
-import { Link } from 'react-router-dom';
-import { Card, Title, Grid, Table, TextInput, Button, Modal } from '@mantine/core';
+import { Card, Title, Grid, Table, TextInput, Button, Modal, Tooltip } from '@mantine/core';
 import { useDisclosure} from '@mantine/hooks';
 import TeacherForm from './TeacherForm';
+import AddTeacher from './AddTeacher';
 
-export default function TeachersList({teachers, headerInfo, buttonLink, deleteFun}) {
+export default function TeachersList({teachers, headerInfo, modalInfo, deleteFun}) {
 
     const [query, setQuery] = useState('');
     const [opened, { open, close }] = useDisclosure(false);
+    const modeCreateTeacher = modalInfo?.includes("Create") ? true : false;
     
     const filterTeachers = useMemo(() => {
         return teachers?.filter((teacher) => {
@@ -29,6 +30,7 @@ export default function TeachersList({teachers, headerInfo, buttonLink, deleteFu
             return (
                 <Teacher
                 teacher={teacher}
+                buttonInfo= {modeCreateTeacher ? "Delete" : "Remove"}
                 deleteFun={deleteFun}
                 key={teacher._id}
                 />
@@ -36,13 +38,13 @@ export default function TeachersList({teachers, headerInfo, buttonLink, deleteFu
         }
         );
     }
-
     // This following section will display the table with the records of individuals.
     return (
-        <>
-            <Modal opened={opened} onClose={close} title="Create Program" centered >
-                <TeacherForm submitText={"Create"}/>
+        <>  
+            <Modal opened={opened} onClose={close} title={modalInfo} centered size={modeCreateTeacher? "md" : "90%"} >
+                {  modeCreateTeacher?  <TeacherForm submitText={"Create"}/> : <AddTeacher closeModal={close}/>}
             </Modal>
+
             <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
                 <Card.Section inheritPadding mt="sm" pb="md">
                     <Grid  spacing="xl"  columns={24}>
@@ -59,11 +61,13 @@ export default function TeachersList({teachers, headerInfo, buttonLink, deleteFu
                                 onChange={(e) => setQuery(e.target.value)}
                             />
                         </Grid.Col>
-                        {buttonLink && <Grid.Col span={{ base: 12, md: 8, lg: 6 }} align='end' >
-                            <Button variant="filled" color="violet" size="md" onClick={open}> 
-                                Add New Teacher
+                        <Grid.Col span={{ base: 12, md: 8, lg: 6 }} align='end' >
+                            <Tooltip label="Only 1 teacher per course delete remove the previous teacher to add one new" position="left" disabled={modeCreateTeacher || teachers[0] === undefined }>
+                            <Button variant="filled" color="violet" size="md" onClick={open} disabled={ !modeCreateTeacher && teachers[0] !== undefined}> 
+                                Add Teacher
                             </Button>
-                        </Grid.Col>}
+                            </Tooltip>
+                        </Grid.Col>
                     </Grid>
                 </Card.Section>
                 <Card.Section inheritPadding mt="sm" pb="md"> 

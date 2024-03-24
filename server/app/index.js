@@ -37,10 +37,10 @@ app.get('/', (req, res) => {
     res.send('WELCOME TO THE SCHOOL MANAGEMENT SYSTEM API!');
     })
 
-app.use('/courses', coursesRoutes);
-app.use('/grades', gradesRoutes);
-app.use('/programs', programsRoutes);
-app.use('/students', studentsRoutes);
-app.use('/teachers', teachersRoutes);
+app.use('/api/courses', coursesRoutes);
+app.use('/api/grades', gradesRoutes);
+app.use('/api/programs', programsRoutes);
+app.use('/api/students', studentsRoutes);
+app.use('/api/teachers', teachersRoutes);
 
 module.exports = app;

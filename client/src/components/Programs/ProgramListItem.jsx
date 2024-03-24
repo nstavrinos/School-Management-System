@@ -9,6 +9,8 @@ export default function Program  ({program, deleteFun}) {
         <Table.Td> {program.program_name}</Table.Td>
         <Table.Td>{program.begin.slice(0, 10)}</Table.Td>
         <Table.Td>{program.end.slice(0, 10)}</Table.Td>
+        <Table.Td align='center'>{program.courses.length}</Table.Td>
+        <Table.Td align='center'>{program.students.length}</Table.Td>
         <Table.Td>    
             <Group justify="start">
                 <Button 

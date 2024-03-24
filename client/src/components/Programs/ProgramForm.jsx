@@ -33,7 +33,7 @@ export default function ProgramForm({program, submitText}) {
           begin: isNotEmpty('Begin date must be 10 characters long'),
           end: isNotEmpty( 'End date must be 10 characters long')    
         },
-      });
+    });
 
     return (
         <Box component="form" maw={400} mx="auto"   p="lg" onSubmit={form.onSubmit(submitAction)} >
@@ -66,6 +66,5 @@ export default function ProgramForm({program, submitText}) {
         />
         <Button type="submit" variant="filled" color="violet" size="md" justify="center" fullWidth mt="md" disabled={ !form.isDirty() || form.isPending || mutation.isPending}>{submitText}</Button>
     </Box>
-
     );
 }

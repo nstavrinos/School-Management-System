@@ -12,8 +12,7 @@ export default function CourseForm({ course, submitText }) {
     const submitAction = async (data) => {
         const mutatedCourse = await mutation.mutateAsync(data);
         form.resetDirty();
-        navigateTo(`/courses/${mutatedCourse._id}`);
-        //  navigateTo(`/courses/${newCourse.courses.at(-1)._id}`);
+        navigateTo(`/courses/${mutatedCourse.courses.at(-1)._id}`);
     };
 
     if( mutation.isError){

@@ -2,12 +2,15 @@ import { useState,useMemo  } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useGetAll,useAddTeacherToCourse } from '../../api/sharedAPI';
 import NotFoundPage from '../../pages/NotFoundPage';
-import { Card, Title, Grid, Table, TextInput, Button, Group , Checkbox  } from '@mantine/core';
+import { Card, Grid, Table, TextInput, Button, Group , Checkbox,  Modal  } from '@mantine/core';
+import TeacherForm from './TeacherForm';
+import { useDisclosure} from '@mantine/hooks';
 
-export default function AddTeacher() {
+export default function AddTeacher({closeModal}) {
     const [query, setQuery] = useState('');
     const [selectedTeacher, setSelectedTeacher] = useState('');
     const navigateTo = useNavigate();
+    const [opened, { open, close }] = useDisclosure(false);
 
     const { data: teachers, isLoading, error } = useGetAll("teachers");
     const addTeacherToCourse = useAddTeacherToCourse();
@@ -24,7 +27,8 @@ export default function AddTeacher() {
 
     const onClickAdd = async () => {
         addTeacherToCourse.mutate({"teacherId": selectedTeacher});
-        navigateTo(-1);
+        //close the modal
+        closeModal();
     };
 
     const filteredTeachers = useMemo( () => {
@@ -59,53 +63,52 @@ export default function AddTeacher() {
             );})
     }
 
-    if (isLoading || teachers === undefined) {
-        return <div>Loading...</div>;
-    }
     if (error) {
         return <NotFoundPage />
     }
+
+    if (isLoading || teachers === undefined) {
+        return <div>Loading...</div>;
+    }
+
     return (
-        <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
-            <Card.Section inheritPadding mt="sm" pb="md">
+        <>  
+        <Modal opened={opened} onClose={close} title="Create a New Teacher" centered >
+            <TeacherForm submitText={"Create"}/>
+        </Modal>
+        <Grid  spacing="xl" >
+            <Grid.Col span={12} align="center" >
                 <Grid  spacing="xl"  columns={24}>
-                    <Grid.Col span={{ base: 24, md: 24, lg: 12 }} align="center">
-                        <Title order={1}>Selecte 1 Teacher to add to the course</Title>
-                    </Grid.Col>
-                    <Grid.Col span={{ base: 24, md: 12, lg: 6 }} align="center" >
+                    <Grid.Col span={{ base: 24, md: 12, lg: 12 }} align="center" >
                         <TextInput
                             radius="xl"
-                            w={"auto"}
+                            w={"60%"}
                             placeholder="Search..."
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                         />
                     </Grid.Col>
-                    <Grid.Col span={{ base: 24, md: 12, lg: 6 }} align='end' >
+                    <Grid.Col span={{ base: 24, md: 12, lg: 12 }} align='end' >
                     <Group justify="center">
                         <Button 
                             onClick={onClickAdd}
                             disabled={selectedTeacher === ''}
                             variant="filled" 
                             color="violet" 
-                            size="md"  
+                            size="sm"  
                         > 
                             Add Selected Teacher
                         </Button>
-                        <Button  color="violet" size="md"  > 
-                                <Link
-                                    to={"/teachers/create"}
-                                    className= "hover:text-pink-500"
-                                    >
-                                Add New Teacher
-                                </Link>
+                        <Button  variant="filled" color="violet" size="sm" onClick={open} > 
+                            Add New Teacher
                         </Button>
                         </Group>
                     </Grid.Col>
                 </Grid>
-            </Card.Section>
-            <Card.Section inheritPadding mt="sm" pb="md"> 
-                <Table.ScrollContainer minWidth={500} type="native" h={200}>
+                </Grid.Col>
+
+             <Grid.Col span={12 } align="center" >
+                <Table.ScrollContainer w="100%" type="native" h={200}>
                     <Table striped highlightOnHover withTableBorder    stickyHeader  >
                         <Table.Thead>
                         <Table.Tr bg='gray'>
@@ -117,8 +120,9 @@ export default function AddTeacher() {
                         <Table.Tbody>{teachersList()}</Table.Tbody>
                     </Table>
                 </Table.ScrollContainer>
-            </Card.Section>
-        </Card>
+            </Grid.Col>
+        </Grid>
+        </>
     );
 
 }

@@ -9,12 +9,13 @@ const getAllPrograms = async (req, res) => {
     try {
         // Logic to fetch all programs from the database
         const programs = await Program.find();
-
+    
         // Return the programs as a response
-        res.status(200).json(programs);
+        res.status(200).send(programs);
+
     } catch (error) {
         // Handle any errors that occur during the process
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send({ error: 'Internal server error' });
     }
 };
 
@@ -27,41 +28,34 @@ const getProgramById = async (req, res) => {
         // Logic to fetch the program from the database
         const program = await Program.findById(id).populate(['students','courses']);
 
-        // If the program has students, fetch them from the database
-        // if(program.students.length > 0){
-        //     // join students with programs
-        //     const students = await Student.find({_id: {$in: program.students}});
-        //     program.students = students;
-
-        // }
-
         // Return the program as a response
-        res.status(200).json(program);
+        res.status(200).send(program);
     } catch (error) {
 
         // If the program is not found, return a 404 response
         if (error.kind === 'ObjectId') {
-            return res.status(404).json({ error: 'Program not found' });
+            return res.status(404).send({ error: 'Program not found' });
         }
         // Handle any errors that occur during the process
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send({ error: 'Internal server error' });
     }
 };
 
 // Example async controller for creating a new program
 const createProgram = async (req, res) => {
     try {
-
         // Logic to create a new program in the database
         const newProgram = await Program.create(req.body);
-       
+
+        // join students with programs and courses
+        await newProgram.populate(['students','courses']);
+
         // Return the newly created program as a response
-        res.status(201).json(newProgram);
-      //  res.status(201).json({message: 'Program created successfully',newProgram});
+        res.status(201).send(newProgram);
+      
     } catch (error) {
         // Handle any errors that occur during the process
-        console.log(error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send({ error: 'Internal server error' });
     }
 };
 
@@ -70,23 +64,20 @@ const updateProgram = async (req, res) => {
     try {
         // Extract the necessary data from the request body and parameters
         const { id } = req.params;
-
         // Logic to update the program in the database
         const updatedProgram = await Program.findByIdAndUpdate(id, req.body, { new: true }).populate(['students','courses']);
 
-        // if(updatedProgram.students.length > 0){
-        //     // join students with programs
-        //     const students = await Student.find({_id: {$in: updatedProgram.students}});
-        //     updatedProgram.students = students;
+        // If the program is not found, return a 404 response
+        if (!updatedProgram) {
+            return res.status(404).send({ error: 'Program not found' });
+        }
 
-        // }
-        
         // Return the updated program as a response
-        res.status(200).json( updatedProgram);
-       // res.status(200).json({message: 'Program updated successfully', program: updatedProgram});
+        res.status(200).send( updatedProgram);
+      
     } catch (error) {
         // Handle any errors that occur during the process
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send({ error: 'Internal server error' });
     }
 };
 
@@ -137,6 +128,11 @@ const addStudentsToProgram = async (req, res) => {
         // Logic to update the program in the database
         const program = await Program.findByIdAndUpdate(id, { $push: { students: { $each: students } } },{ new: true });
 
+        // if the program is not found, return a 404 response
+        if (!program) {
+            return res.status(404).send({ error: 'Program not found' });
+        }
+
         // Logic to create the grades for each course in the program in the database with promises
         if(program.courses.length > 0){
             program.courses.forEach(async course_id => { 
@@ -152,31 +148,18 @@ const addStudentsToProgram = async (req, res) => {
         }
         else{
             await Promise.all(students.map(async student_id => {
-                const sd =await Student.findByIdAndUpdate(student_id, { $push: {  programs: program._id } },{ new: true });
-                console.log("sd2",sd);
+                await Student.findByIdAndUpdate(student_id, { $push: {  programs: program._id } },{ new: true });     
             }));}
 
+        // join students with programs
         await program.populate('students');
 
-        // join students with programs
-       // const studentsList = await Student.find({_id: {$in: program.students}});
-       // program.students = studentsList;
-
-        // insert program to students
-        // studentsList.forEach(async student => {
-        //     if(!student.programs.includes(program._id)){
-        //         student.programs.push(program._id);
-        //         await student.save();
-        //     }
-        // });
-       
-
         // Return the updated program as a response
-        res.status(200).json(program);
+        res.status(200).send(program);
         //res.status(200).json({message: 'Students added successfully',program});
     } catch (error) {
         // Handle any errors that occur during the process
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send({ error: 'Internal server error' });
     }
 }
 
@@ -189,9 +172,19 @@ const removeStudentFromProgram = async (req, res) => {
 
         // Logic to remove the program from the student in the database  
         const student = await Student.findByIdAndUpdate(studentId, { $pull: { programs: id } },{ new: true });
+
+        // if the student is not found, return a 404 response
+        if (!student) {
+            return res.status(404).send({ error: 'Student not found' });
+        }
     
         // Logic to remove the student from the program in the database
         const program = await Program.findByIdAndUpdate(id, { $pull: { students: student._id } },{ new: true });
+
+        // if the program is not found, return a 404 response
+        if (!program) {
+            return res.status(404).send({ error: 'Program not found' });
+        }
 
          // Logic to delete the grade for each course in the program in the database
         program.courses.forEach(async course_id => {
@@ -206,12 +199,11 @@ const removeStudentFromProgram = async (req, res) => {
       
 
         // Return a success message as a response
-        //res.status(200).json({ message: 'Student removed successfully' });
-        res.status(200).json(program);
+        res.status(200).send(program);
 
     } catch (error) {
         // Handle any errors that occur during the process
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send({ error: 'Internal server error' });
     }
 };
 
@@ -228,6 +220,11 @@ const addCourseToProgram = async (req, res) => {
         // Logic to update the program in the database
         const program = await Program.findById(id).populate('students');
 
+        // if the program is not found, return a 404 response
+        if (!program) {
+            return res.status(404).send({ error: 'Program not found' });
+        }
+
         if(!program.courses.includes(newCourse._id)){
             program.courses.push(newCourse._id);
 
@@ -242,23 +239,16 @@ const addCourseToProgram = async (req, res) => {
             await Student.findByIdAndUpdate(student._id, { $push: { grades: grade._id } },{ new: true });
         }));
         await newCourse.save();
-
-        // // Logic to create the grades for the course in the database
-        // program.students.forEach(async student => {
-        //     const grade = await Grade.create({ grade: 0,course: newCourse._id, student: student._id});
-        //     newCourse.grades.push(grade._id);
-        // });
-        // await newCourse.save();
         
         // join courses with programs
         await program.populate('courses');
 
         // Return the updated program as a response
-        res.status(200).json(program);
-        //res.status(200).json({message: 'Course added successfully', program});
+        res.status(200).send(program);
+ 
     } catch (error) {
         // Handle any errors that occur during the process
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send({ error: 'Internal server error' });
     }
 };
 
@@ -275,7 +265,7 @@ const deleteProgram = async (req, res) => {
 
         // If the program is not found, return a 404 response
         if (!program) {
-            return res.status(404).json({ error: 'Program not found' });
+            return res.status(404).send({ error: 'Program not found' });
         }
 
         // If the program has students, remove the program from the students
@@ -299,10 +289,10 @@ const deleteProgram = async (req, res) => {
         await program.deleteOne();
 
         // Return a success message as a response
-        res.status(200).json({ message: 'Program deleted successfully' });
+        res.status(200).send({ message: 'Program deleted successfully' });
     } catch (error) {
         // Handle any errors that occur during the process
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send({ error: 'Internal server error' });
     }
 };
 

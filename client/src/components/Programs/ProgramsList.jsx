@@ -1,6 +1,6 @@
 import React ,{useMemo, useState}from 'react';
 import Program from './ProgramListItem';
-import { Card, Title, Grid, Table, TextInput, Button, Modal } from '@mantine/core';
+import { Card, Title, Grid, Table, TextInput, Button, Modal, Center } from '@mantine/core';
 import { useDisclosure} from '@mantine/hooks';
 import ProgramForm from './ProgramForm';
 
@@ -72,6 +72,8 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
                             <Table.Th> Name of the program</Table.Th>
                             <Table.Th> Start Date</Table.Th>
                             <Table.Th> End Date</Table.Th>
+                            <Table.Th><Center>Number of Courses</Center></Table.Th>
+                            <Table.Th> <Center>Number of Students</Center></Table.Th>
                             <Table.Th w={300}>Actions</Table.Th>
                         </Table.Tr>
                         </Table.Thead>

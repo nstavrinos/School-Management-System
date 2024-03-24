@@ -64,7 +64,9 @@ const removeCourseFromTeacher = async (req, res) => {
     try {
         // Extract the teacher ID and course ID from the request parameters
         const { teacherId } = req.params;
-        const { courseId } = req.body;
+        const  courseId  = req.body.courseId;
+
+        console.log(teacherId, courseId);
 
         // Logic to remove the teacher from the course
         await Course.findByIdAndUpdate(courseId,{ $unset: { teacher: 1 } });

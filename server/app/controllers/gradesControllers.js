@@ -58,11 +58,16 @@ const updateGrade = async (req, res) => {
         // Logic to update the grade in the database
         const updatedGrade = await Grade.findByIdAndUpdate(id,req.body, { new: true });
 
+        if (!updatedGrade) {
+            // Return a 404 error if the grade is not found in the database
+            return res.status(404).send({ error: 'Grade not found' });
+        }
+
         // Return the updated grade as a response
-        res.status(200).json(updatedGrade);
+        res.status(200).send(updatedGrade);
     } catch (error) {
         // Handle any errors that occur during the process
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).send({ error: 'Internal server error' });
     }
 };
 

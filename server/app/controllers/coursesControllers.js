@@ -129,6 +129,11 @@ const deleteCourse = async (req, res) => {
 
         const course = await Course.findByIdAndDelete(courseId);
 
+        //if course is not found
+        if (!course) {
+            return res.status(404).json({ error: 'Course not found' });
+        }
+
         // Logic to delete the course from the program
         await Program.findByIdAndUpdate(course.program,{ $pull: { courses: courseId } },{ new: true });
         await Teacher.findByIdAndUpdate(course.teacher,{ $pull: { courses: courseId } },{ new: true });
@@ -136,7 +141,7 @@ const deleteCourse = async (req, res) => {
         await Student.updateMany({grades:{$in:course.grades}},{ $pull: { grades: {$in:course.grades} } },{ new: true });
 
         // Send a success message as a response
-        res.status(200).json({ message: 'Course deleted successfully' });
+        res.status(200).json(course);
     } catch (error) {
         console.log(error);
         // Handle any errors that occur during the process
