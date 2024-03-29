@@ -6,8 +6,6 @@ import ProgramsPage from './pages/ProgramsPage.jsx'
 import StudentsPage from './pages/StudentsPage.jsx'
 import StudentPage from './pages/StudentPage.jsx'
 import ProgramPage from './pages/ProgramPage.jsx'
-import AddStudents from './components/Students/AddStudents.jsx'
-import AddTeacher from './components/Teachers/AddTeacher.jsx'
 import TeachersPage from './pages/TeachersPage.jsx'
 import TeacherPage from './pages/TeacherPage.jsx'
 import CoursesPage from './pages/CoursesPage.jsx'
@@ -17,10 +15,8 @@ import './index.css'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import { QueryClient, QueryClientProvider, QueryCache } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
-
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
-
 import { MantineProvider } from '@mantine/core';
 import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -40,9 +36,6 @@ const BrowserRouter = createBrowserRouter([
               { path: '/programs/:id', 
                 element: <ProgramPage />,
               },
-              { path: '/programs/addStudentsToProgram/:id', 
-                element: <AddStudents/>,
-              },
               { path: '/students',
                 element: <StudentsPage/>
               },
@@ -60,15 +53,9 @@ const BrowserRouter = createBrowserRouter([
               },
               { path: '/teachers/:id', 
                 element: <TeacherPage />,
-              },
-              { path: '/programs/addTeacherToCourse/:id', 
-              element: <AddTeacher/>,
-              },
-
+              }
             ]
   }
-
-
 ]);
 
 const queryClient = new QueryClient({

@@ -1,23 +1,25 @@
 import { useForm, isEmail, isInRange, hasLength } from '@mantine/form';
 import { Button,TextInput, NumberInput, Box,Title  } from '@mantine/core';
-import { useCreate, useUpdate , useAddStudentToProgram } from '../../api/sharedAPI';
+import { useCreate, useUpdate} from '../../api/sharedAPI';
 import { useNavigate, useParams } from 'react-router-dom';
 import NotFoundPage from '../../pages/NotFoundPage';
 
-export default function StudentForm({ student, submitText }) {
+export default function StudentForm({ student, submitText , closeModal}) {
 
     const navigateTo = useNavigate();
     const {id} = useParams();
-    const mutation = student ? useUpdate("students") : (id ? useAddStudentToProgram() : useCreate("students"));
+    const mutation = student ? useUpdate("students") :  useCreate("students");
 
     const submitAction = async (data) => {
-        console.log(data);
-        console.log(mutation);
-        console.log(id);
         const mutatedStudent = await mutation.mutateAsync(data);
         form.resetDirty();
-        navigateTo(`/students/${mutatedStudent._id}`);
-    };
+        if(!student && !id){
+            navigateTo(`/students/${mutatedStudent._id}`);
+        }
+        else if(!student && id){
+            closeModal();
+        }
+    }
 
     if( mutation.isError){
         return <NotFoundPage/>

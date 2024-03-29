@@ -1,18 +1,18 @@
-import { useNavigate } from 'react-router-dom';
 import { useCreate, useUpdate } from '../../api/sharedAPI';
 import { useForm, isEmail,hasLength } from '@mantine/form';
 import { Button,TextInput,Box,Title } from '@mantine/core';
-import '@mantine/core/styles/Grid.css';
 
-export default function TeacherForm({ teacher, submitText }) {
+export default function TeacherForm({ teacher, submitText, closeModal }) {
 
-    const navigateTo = useNavigate();
     const mutation = teacher ? useUpdate("teachers") : useCreate("teachers");
 
     const submitAction = async (data) => {
-        const mutatedProgram = await mutation.mutateAsync(data);
+        await mutation.mutateAsync(data);
         form.resetDirty();
-        navigateTo(`/teachers/${mutatedProgram._id}`);
+        if(!teacher){
+            closeModal();
+        }
+        
     };
 
     if( mutation.isError){

@@ -26,7 +26,7 @@ export default function App() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar py="lg" px={10}  >
+      <AppShell.Navbar py="lg" px={10} onClick={toggle} >
             <MainLinks/>
       </AppShell.Navbar>
 

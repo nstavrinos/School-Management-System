@@ -14,6 +14,6 @@ export default function StudentsPage() {
         return <div>An error has occurred: {error.message}</div>;
     }
     return (
-        <StudentsList students={students} headerInfo="Students" buttonLink={"/students/create"} deleteFun={deleteFun} />
+        <StudentsList students={students} headerInfo="Students" tableMaxHeight="630" modalInfo="Create Student" deleteFun={deleteFun} />
     );
     }

@@ -15,7 +15,7 @@ export default function TeachersPage () {
     }
 
     return (
-        <TeachersList teachers={teachers} headerInfo="Teachers" modalInfo="Create Teacher" deleteFun={deleteFun} />
+        <TeachersList teachers={teachers} headerInfo="Teachers" modalInfo="Create Teacher"  tableMaxHeight="630" deleteFun={deleteFun} />
     );
 };
 

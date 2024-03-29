@@ -1,6 +1,6 @@
 import React,{useState} from 'react';
 import { Table, Group, Button, NumberInput } from '@mantine/core';
-import { useUpdateGrade } from '../../api/sharedAPI';
+import { useUpdateGrade } from '../../api/gradesAPI';
 
 export default function Grade  ({grade,mode}) {
 
@@ -11,11 +11,11 @@ export default function Grade  ({grade,mode}) {
         updateGrade.mutate({grade_id: grade._id,new_score: editGrade.value});
         setEditGrade({...editGrade,edit: false});
     }
-
+   
     return (
         <Table.Tr >
         <Table.Td>  {mode!=="student" ? grade.student.first_name : grade.course?.course_name}</Table.Td>
-        <Table.Td>{mode!=="student" ? grade.student.last_name : grade.course?.teacher?.first_name + " " + grade.course?.teacher?.last_name}</Table.Td>
+        <Table.Td>{mode!=="student" ? grade.student.last_name : (grade.course?.teacher?.first_name || "") + " " + (grade.course?.teacher?.last_name || "")}</Table.Td>
         <Table.Td>{grade.course?.program?.program_name}</Table.Td>
         <Table.Td >
             <NumberInput
@@ -27,7 +27,7 @@ export default function Grade  ({grade,mode}) {
                 error={editGrade.value < 0 || editGrade.value > 100}
                 hideControls
                 disabled={!editGrade.edit}
-                value={editGrade.value}
+                value={grade.grade}
                 onChange={(value) => setEditGrade({...editGrade, value: value})}
                 size='md'
                 radius='md'

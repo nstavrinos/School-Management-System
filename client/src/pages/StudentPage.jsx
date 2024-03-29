@@ -1,4 +1,5 @@
-import {useGetById, useUpdate, } from '../api/sharedAPI';
+import {useGetById, useUpdate} from '../api/sharedAPI';
+import {useRemoveProgramFromStudent } from '../api/studentsAPI';
 import NotFoundPage from './NotFoundPage';
 import ProgramsList from "../components/Programs/ProgramsList";
 import GradesList from '../components/Grades/GradesList';
@@ -9,9 +10,10 @@ export default function StudentPage() {
 
     const getStudent= useGetById("students");
     const updateStudent = useUpdate("students");
+    const removeProgram= useRemoveProgramFromStudent();
 
-    const studentRemoveFun = async  (studentId) => {
-        console.log("Student ID: ", studentId);
+    const programRemoveFun = async  (programId) => {
+        await removeProgram.mutateAsync(programId);
     }
 
     if(getStudent.isError || updateStudent.isError){
@@ -21,17 +23,17 @@ export default function StudentPage() {
     if(getStudent.isLoading || getStudent.data === undefined){
         return <p>Loading...</p>
     }
-
+   
     return (
             <Grid  spacing="lg">
                 <Grid.Col span={12} >
                    <EditStudent student={getStudent.data}/>   
                 </Grid.Col>
                 <Grid.Col span={12} >
-                     <ProgramsList programs={getStudent?.data?.programs} headerInfo="Student Programs" buttonLink={''} deleteFun={studentRemoveFun}/>
+                     <ProgramsList programs={getStudent?.data?.programs} headerInfo="Student Programs" buttonInfo='Remove' tableMaxHeight="100"deleteFun={programRemoveFun}/>
                 </Grid.Col>
                 <Grid.Col span={12} >
-                    <GradesList grades={getStudent?.data?.grades} mode="student" />
+                    <GradesList grades={getStudent?.data?.grades} mode="student" tableMaxHeight="300" />
                 </Grid.Col>
             </Grid>
     );

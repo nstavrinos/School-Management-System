@@ -16,6 +16,6 @@ export default function StudentsPage() {
     }
     
     return (
-        <CoursesList courses={courses} headerInfo="Courses" buttonLink={``} buttonInfo='Delete' deleteFun={deleteFun}/>
+        <CoursesList courses={courses} headerInfo="Courses" enableAddCourse={false} tableMaxHeight="630" buttonInfo='Delete' deleteFun={deleteFun}/>
     );
     }

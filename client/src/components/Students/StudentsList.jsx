@@ -3,11 +3,13 @@ import Student from './StudentListItem';
 import { Card, Title, Grid, Table, TextInput, Button, Modal } from '@mantine/core';
 import { useDisclosure} from '@mantine/hooks';
 import StudentForm from './StudentForm';
+import AddStudents from './AddStudents';
 
-export  default  function  StudentsList ({students, headerInfo , buttonLink, deleteFun}) {
+export  default  function  StudentsList ({students, headerInfo , tableMaxHeight ,modalInfo, deleteFun}) {
 
   const [query, setQuery] = useState('');
   const [opened, { open, close }] = useDisclosure(false);
+  const modeCreateStudent = modalInfo?.includes("Create") ? true : false;
   
 
   const filteredStudents = useMemo( () => {
@@ -30,6 +32,7 @@ export  default  function  StudentsList ({students, headerInfo , buttonLink, del
                 <Student
                     key={student._id}
                     student={student}
+                    buttonInfo= {modeCreateStudent ? "Delete" : "Remove"}
                     deleteFun={deleteFun}
                     
                 />
@@ -39,8 +42,8 @@ export  default  function  StudentsList ({students, headerInfo , buttonLink, del
 
     return (
         <>
-            <Modal opened={opened} onClose={close} title="Create Student" centered >
-            <StudentForm submitText={"Create"}/>
+            <Modal opened={opened} onClose={close} title={modalInfo} centered size={modeCreateStudent? "md" : "90%"}  >
+            {  modeCreateStudent?  <StudentForm submitText={"Create"} closeModal={close}/> : <AddStudents closeModal={close}/>}
             </Modal>
             <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
                 <Card.Section inheritPadding mt="sm" pb="md">
@@ -66,7 +69,7 @@ export  default  function  StudentsList ({students, headerInfo , buttonLink, del
                     </Grid>
                 </Card.Section>
                 <Card.Section inheritPadding mt="sm" pb="md"> 
-                    <Table.ScrollContainer minWidth={500} type="native" h={200}>
+                    <Table.ScrollContainer minWidth={500} type="native" h="auto" mah={tableMaxHeight}>
                         <Table striped highlightOnHover withTableBorder    stickyHeader  >
                             <Table.Thead>
                             <Table.Tr bg='gray'>

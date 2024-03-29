@@ -25,7 +25,7 @@ const getCourseById = async (req, res) => {
         const courseId = req.params.id;
 
         // Logic to fetch the course from the database
-        const course = await Course.findById(courseId).populate(['teacher',{path:'grades',populate:'student'}]);
+        const course = await Course.findById(courseId).populate(['teacher','program',{path:'grades',populate:'student'}]);
 
         // Send the course as a response
         res.status(200).json(course);

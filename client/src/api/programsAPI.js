@@ -1,84 +1,138 @@
-const baseUrl = 'http://localhost:5000/';
+import { useParams} from "react-router-dom";
+import { useMutation, useQueryClient} from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import apiClient from './connectAxios';
 
-async function getAll(endpoint) {
-    // Fetch programms data from your API
-    try {
-        const response = await fetch(`${baseUrl}${endpoint}`);
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error(error);
-    }
-}
+export function useAddCourseToProgram() {
 
-async function getById(endpoint, id) {
-    try {
-        const response = await fetch(`${baseUrl}${endpoint}/${id}`);
+    const {id} = useParams();
+    const queryClient = useQueryClient();
 
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error);
+    const addCourseToProgram = async(data) => {
+        try {
+            const response = await toast.promise( apiClient.patch(`programs/addCourseToProgram/${id}`, data), {
+                pending: 'Adding Course...',
+                success: 'Successfully added course',
+            });
+            return response.data;
+
+        } catch (error) {
+            console.error(error);
+
+            // Check if the error is a response error and if it has a message property and throw it as an error
+            if (error.response.data.error !== undefined) {
+                throw new Error(error.response.data.error);
+            } else {
+                throw new Error(error);
+            }   
         }
-
-        const data = await response.json();
-
-        return data;
-    } catch (error) {
-        
-        console.error(error);
     }
-}
 
-async function create(endpoint, data) {
-    try {
-        const response = await fetch(`${baseUrl}${endpoint}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-        const responseData = await response.json();
-
-        return responseData;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function update(endpoint, id, data) {
-    try {
-        const response = await fetch(`${baseUrl}${endpoint}/${id}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-        const responseData = await response.json();
-        return responseData;
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-async function remove(endpoint, id) {
-    try {
+    return useMutation({
+        mutationFn: addCourseToProgram,
+        onSuccess: (data) => {
+            console.log(data);
+            // setting the program data in the query cache 
+            queryClient.setQueryData(["programs", id], (oldData) => ({...oldData, ...data}));
+            // invalidating the new course data in the query cache
+            queryClient.invalidateQueries({queryKey: ["courses", data.courses.at(-1)._id],exact: true});
+            //setting the courses data in the query cache with the last course in the array which is the newly added course
+            queryClient.setQueryData(["courses"], (oldData) => [...(oldData || []), data.courses.at(-1)]);
     
-        const response = await fetch(`${baseUrl}${endpoint}/${id}`, {
-            method: 'DELETE',
-        });
-
-        if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.error);
+        },
+        onError: (error) => {
+            console.error(error);
+            toast.error(`Addition failed because: ${error.message}`);
         }
+    });
 
-        const responseData = await response.json();
-        return responseData;
-    } catch (error) {
-        console.error(error);
-    }
 }
 
-export { getAll, getById, create, update, remove };
+export function useAddStudentsToProgram (){
+
+    const {id} = useParams();
+    const queryClient = useQueryClient();
+
+    const addStudentsToProgram = async(data) => {
+        try {
+
+            const response = await toast.promise( apiClient.patch(`programs/addStudentsToProgram/${id}`, data), {
+                pending: 'Adding Student...',
+                success: 'Successfully added student',
+            });
+            return response.data;
+        } catch (error) {
+            console.error(error);
+
+            // Check if the error is a response error and if it has a message property and throw it as an error
+            if (error.response.data.error !== undefined) {
+                throw new Error(error.response.data.error);
+            } else {
+                throw new Error(error);
+            }
+        }
+    }
+
+    return useMutation({
+        mutationFn: addStudentsToProgram,
+        onSuccess: (data) => {
+            queryClient.setQueryData(["programs", id], (oldData) => ({...oldData, ...data}));
+            data.students.forEach(student => {
+                queryClient.invalidateQueries({queryKey: ["students",student],exact: true});
+            });
+            queryClient.invalidateQueries({queryKey: ["students"],exact: true});
+            data.courses.forEach(course => {
+                queryClient.invalidateQueries({queryKey: ["courses",course],exact: true});
+            });
+            queryClient.invalidateQueries({queryKey: ["courses"],exact: true});
+            
+        },
+        onError: (error) => {
+            console.error(error);
+            toast.error(`Addition failed because: ${error.message}`);
+        }
+    });
+
+}
+
+export function useRemoveStudentFromProgram() {
+    
+        const {id} = useParams();
+        const queryClient = useQueryClient();
+    
+        const removeStudentFromProgram = async(data) => {
+            try {
+                const response = await toast.promise( apiClient.patch(`programs/removeStudentFromProgram/${id}`, {studentId: data}), {
+                    pending: 'Removing Student...',
+                    success: 'Successfully removed student',
+                });
+                return response.data;
+            } catch (error) {
+                console.error(error);
+
+                // Check if the error is a response error and if it has a message property and throw it as an error
+                if (error.response.data.error !== undefined) {
+                    throw new Error(error.response.data.error);
+                } else {
+                    throw new Error(error);
+                }
+            }
+        }
+    
+        return useMutation({
+            mutationFn: removeStudentFromProgram,
+            onMutate: (data) => {
+                queryClient.invalidateQueries({queryKey:["students", data], exact: true});
+            },
+            onSuccess: (data) => {
+                queryClient.setQueryData(["programs", id], (oldData) => ({...oldData, ...data}));
+                data.courses.forEach(course => {
+                    queryClient.invalidateQueries({queryKey: ["courses",course],exact: true});
+                });
+            },
+            onError: (error) => {
+                console.error(error);
+                toast.error(`Removal failed because: ${error.message}`);
+            }
+        });
+}

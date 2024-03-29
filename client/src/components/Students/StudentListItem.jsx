@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Table, Group, Button } from '@mantine/core';
 
-export default function Student  ({student, deleteFun}) {
+export default function Student  ({student,buttonInfo ,deleteFun}) {
 
     return (
         <Table.Tr >
@@ -25,7 +25,7 @@ export default function Student  ({student, deleteFun}) {
                     size="md" 
                     color="red"            
                     onClick={() => {deleteFun(student._id);}} >
-                        Delete
+                        {buttonInfo}
                 </Button>
             </Group>
         </Table.Td>

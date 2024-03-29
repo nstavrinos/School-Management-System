@@ -1,15 +1,15 @@
 import { useState,useMemo  } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useGetAll,useAddTeacherToCourse } from '../../api/sharedAPI';
+import { useGetAll} from '../../api/sharedAPI';
+import { useAddTeacherToCourse } from '../../api/coursesAPI';
 import NotFoundPage from '../../pages/NotFoundPage';
-import { Card, Grid, Table, TextInput, Button, Group , Checkbox,  Modal  } from '@mantine/core';
+import { Grid, Table, TextInput, Button, Group , Checkbox,  Modal  } from '@mantine/core';
 import TeacherForm from './TeacherForm';
 import { useDisclosure} from '@mantine/hooks';
 
 export default function AddTeacher({closeModal}) {
     const [query, setQuery] = useState('');
     const [selectedTeacher, setSelectedTeacher] = useState('');
-    const navigateTo = useNavigate();
+    
     const [opened, { open, close }] = useDisclosure(false);
 
     const { data: teachers, isLoading, error } = useGetAll("teachers");
@@ -74,7 +74,7 @@ export default function AddTeacher({closeModal}) {
     return (
         <>  
         <Modal opened={opened} onClose={close} title="Create a New Teacher" centered >
-            <TeacherForm submitText={"Create"}/>
+            <TeacherForm submitText={"Create"} closeModal={close}/>
         </Modal>
         <Grid  spacing="xl" >
             <Grid.Col span={12} align="center" >
@@ -105,9 +105,8 @@ export default function AddTeacher({closeModal}) {
                         </Group>
                     </Grid.Col>
                 </Grid>
-                </Grid.Col>
-
-             <Grid.Col span={12 } align="center" >
+            </Grid.Col>
+            <Grid.Col span={12 } align="center" >
                 <Table.ScrollContainer w="100%" type="native" h={200}>
                     <Table striped highlightOnHover withTableBorder    stickyHeader  >
                         <Table.Thead>

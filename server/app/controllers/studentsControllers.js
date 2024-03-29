@@ -26,8 +26,6 @@ const getStudentById = async (req, res) => {
         // Logic to fetch the student from the database
         const student = await Student.findById(studentId).populate(['programs',{path:'grades',populate: { path:'course' , populate: ['teacher','program']}}]);
 
-        console.log("Student: ", student.grades);
-
         // Return the student as a response
         res.status(200).json(student);
     } catch (error) {
@@ -98,6 +96,49 @@ const deleteStudent = async (req, res) => {
     }
 };
 
+// Example controller for removing a program from a student
+const removeProgramFromStudent = async (req, res) => {
+    try {
+        // Extract the necessary data from the request body and parameters
+        const { id } = req.params;
+        const programId  = req.body.programId;
+
+        // Logic to remove the program from the student in the database  
+        const student = await Student.findByIdAndUpdate(id, { $pull: { programs: programId } },{ new: true });
+
+        // if the student is not found, return a 404 response
+        if (!student) {
+            return res.status(404).send({ error: 'Student not found' });
+        }
+    
+        // Logic to remove the student from the program in the database
+        const program = await Program.findByIdAndUpdate(programId, { $pull: { students: student._id } },{ new: true });
+
+        // if the program is not found, return a 404 response
+        if (!program) {
+            return res.status(404).send({ error: 'Program not found' });
+        }
+
+         // Logic to delete the grade for each course in the program in the database
+        program.courses.forEach(async course_id => {
+            const grade=await Grade.findOneAndDelete({course: course_id, student: student._id});
+            await Course.findByIdAndUpdate(course_id, { $pull: { grades: grade._id } },{ new: true });
+            await Student.findByIdAndUpdate(student._id, { $pull: { grades: grade._id } },{ new: true });
+
+        });
+
+        // Logic to populate the student with the programs and grades
+        await student.populate(['programs',{path:'grades',populate: { path:'course' , populate: ['teacher','program']}}]);
+
+        // Return a success message as a response
+        res.status(200).send(student);
+
+    } catch (error) {
+        // Handle any errors that occur during the process
+        res.status(500).send({ error: 'Internal server error' });
+    }
+};
+
 // Export the controllers for use in routes or other files
 module.exports = {
     getAllStudents,
@@ -105,4 +146,5 @@ module.exports = {
     createStudent,
     updateStudent,
     deleteStudent,
+    removeProgramFromStudent,
 };

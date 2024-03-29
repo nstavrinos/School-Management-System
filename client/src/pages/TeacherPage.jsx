@@ -1,4 +1,5 @@
-import { useGetById,useRemoveCourseFromTeacher} from '../api/sharedAPI';
+import { useGetById} from '../api/sharedAPI';
+import {useRemoveCourseFromTeacher} from '../api/teachersAPI';
 import NotFoundPage from './NotFoundPage';
 import CoursesList from "../components/Courses/CoursesList";
 import EditTeacher from "../components/Teachers/EditTeacher";
@@ -28,7 +29,7 @@ export default function TeacherPage() {
                     <EditTeacher teacher={getTeacher.data}/>
                 </Grid.Col>
                 <Grid.Col span={12} >
-                    <CoursesList courses={getTeacher.data.courses} headerInfo="List of Courses" buttonLink={''} buttonInfo='Remove'deleteFun={removeCourseFun} />
+                    <CoursesList courses={getTeacher.data.courses} headerInfo="List of Courses" enableAddCourse={false} tableMaxHeight="630" buttonInfo='Remove'deleteFun={removeCourseFun} />
                 </Grid.Col>
             </Grid>
 

@@ -19,8 +19,6 @@ app.use(cors(
     {
         origin: '*',
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-        // preflightContinue: false,
-        // optionsSuccessStatus: 204
     }
 ));
 
@@ -35,7 +33,7 @@ mongoose.connect(url)
 
 app.get('/', (req, res) => {
     res.send('WELCOME TO THE SCHOOL MANAGEMENT SYSTEM API!');
-    })
+})
 
 app.use('/api/courses', coursesRoutes);
 app.use('/api/grades', gradesRoutes);

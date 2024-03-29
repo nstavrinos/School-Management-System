@@ -1,4 +1,5 @@
-import { useGetById,useRemoveStudentFromProgram,useDelete} from '../api/sharedAPI';
+import { useGetById,useDelete} from '../api/sharedAPI';
+import {useRemoveStudentFromProgram} from '../api/programsAPI';
 import StudentsList from '../components/Students/StudentsList';
 import NotFoundPage from '../pages/NotFoundPage';
 import CoursesList from '../components/Courses/CoursesList';
@@ -35,10 +36,10 @@ export default function ProgramPage() {
                <EditProgram program={getProgram.data}/>
             </Grid.Col>
             <Grid.Col span={12} >
-                <StudentsList students={getProgram?.data?.students} headerInfo="List of Students that are part of this program" buttonLink={`/programs/addStudentsToProgram/${getProgram?.data?._id}`} deleteFun={studentRemoveFun}/>
+                <StudentsList students={getProgram?.data?.students} headerInfo="List of Students that are part of this program" tableMaxHeight="200" deleteFun={studentRemoveFun}/>
             </Grid.Col>
             <Grid.Col span={12} >
-                <CoursesList courses={getProgram?.data?.courses} headerInfo="List of Courses" buttonLink={`/programs/addCourseToProgram/${getProgram?.data?._id}`} buttonInfo='Delete' deleteFun={courseDelFun}/>
+                <CoursesList courses={getProgram?.data?.courses} headerInfo="List of Courses" tableMaxHeight="630" enableAddCourse={true} buttonInfo='Delete' deleteFun={courseDelFun}/>
             </Grid.Col>
         </Grid>
     );

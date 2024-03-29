@@ -81,43 +81,6 @@ const updateProgram = async (req, res) => {
     }
 };
 
-
-// Example async controller for creating a new student and adding it to a program
-// const addStudentsToProgram = async (req, res) => {
-//     try {
-//         // Extract the necessary data from the request body and parameters
-//         const { id } = req.params;
-//         const studentsId = req.body;
-
-//         // Logic to find the students in the database
-//         const addStudents = await Student.find({_id: {$in: studentsId}});
-
-//         console.log("addstudents",addStudents);
-
-//         // Logic to update the program in the database
-//         const program = await Program.findById(id);
-//         addStudents.forEach(student => {
-//             if(!program.students.includes(student._id)){
-//                 program.students.push(student._id);
-//             }
-//         });
-//         await program.save();
-//         console.log("pushedstudents",program.students);
-//         // join students with programs
-//         const students = await Student.find({_id: {$in: program.students}});
-//         program.students = students;
-
-
-
-//         // Return the newly created student as a response
-//         res.status(201).json(program);
-//         //res.status(201).json({message: 'Student added successfully',program});
-//     } catch (error) {
-//         // Handle any errors that occur during the process
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// }
-
 // Example async controller for adding a students to a program
 const addStudentsToProgram = async (req, res) => {
     try {
@@ -141,7 +104,6 @@ const addStudentsToProgram = async (req, res) => {
                     const grade = await Grade.create({ grade: 0,course: course_id, student: student_id});
                     grades.push(grade._id);
                     const sd =await Student.findByIdAndUpdate(student_id, { $push: { grades: grade._id }},{ $push: {  programs: program._id } },{ new: true });
-                    console.log("sd",sd);
                 }));
                 await Course.findByIdAndUpdate(course_id, { $push: { grades: grades } },{ new: true });
             });
@@ -168,7 +130,7 @@ const removeStudentFromProgram = async (req, res) => {
     try {
         // Extract the necessary data from the request body and parameters
         const { id } = req.params;
-        const  studentId  = req.body.studentId;
+        const studentId  = req.body.studentId;
 
         // Logic to remove the program from the student in the database  
         const student = await Student.findByIdAndUpdate(studentId, { $pull: { programs: id } },{ new: true });
@@ -302,7 +264,6 @@ module.exports = {
     getProgramById,
     createProgram,
     updateProgram,
-  //  addStudentToProgram,
     addStudentsToProgram,
     removeStudentFromProgram,
     addCourseToProgram,

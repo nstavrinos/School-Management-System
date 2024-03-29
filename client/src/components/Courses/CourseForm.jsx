@@ -1,6 +1,7 @@
 import { useForm, isInRange, hasLength } from '@mantine/form';
 import { Button,TextInput, NumberInput, Box,Title  } from '@mantine/core';
-import {useAddCourseToProgram, useUpdate} from '../../api/sharedAPI';
+import {useUpdate} from '../../api/sharedAPI';
+import {useAddCourseToProgram} from '../../api/programsAPI';
 import { useNavigate } from 'react-router-dom';
 import NotFoundPage from '../../pages/NotFoundPage';
 

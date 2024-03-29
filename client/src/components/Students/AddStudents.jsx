@@ -1,13 +1,15 @@
 import React, { useMemo, useState } from 'react';
-import { useGetAll,useGetById,useAddStudentsToProgram } from '../../api/sharedAPI';
-import { useNavigate,  Link } from 'react-router-dom';
-import { Card, Title, Grid, Table, TextInput, Button, Group , Checkbox ,Tooltip } from '@mantine/core';
+import { useGetAll,useGetById } from '../../api/sharedAPI';
+import { useAddStudentsToProgram } from '../../api/programsAPI';
+import { Grid, Table, TextInput, Button,Title, Group , Checkbox,  Modal  } from '@mantine/core';
+import StudentForm from './StudentForm';
+import { useDisclosure} from '@mantine/hooks';
 
-export  default  function  AddStudents () {
+export  default  function  AddStudents ({closeModal}) {
 
     const [query, setQuery] = useState('');
     const [selectedStudents, setSelectedStudents] = useState([]);
-    const navigateTo = useNavigate();
+    const [opened, { open, close }] = useDisclosure(false);
 
     const {data: students, isLoading, error} = useGetAll("students");
     const {data: program} = useGetById("programs");
@@ -24,7 +26,7 @@ export  default  function  AddStudents () {
 
     const onClickAdd = async() => {
         addStudentsToProgram.mutate(selectedStudents);
-        navigateTo(-1);
+        closeModal();
     };
 
   const studentsInProgram = useMemo(() =>{ return program?.students.map(student => student._id)}, [program]);
@@ -63,20 +65,25 @@ export  default  function  AddStudents () {
         );})
 }
 
+    if (error) {
+        return <NotFoundPage />
+    }
 
     if (isLoading ||  students === undefined) {
         return <div>Loading...</div>;
     }
-    if (error) {
-        return <div>An error has occurred: {error.message}</div>;
-    }
+
 
     return (
-        <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
-            <Card.Section inheritPadding mt="sm" pb="md">
+        <>  
+        <Modal opened={opened} onClose={close} title="Create a New Student" centered >
+            <StudentForm submitText={"Create"} closeModal={close}/>
+        </Modal>
+        <Grid  spacing="xl" >
+            <Grid.Col span={12} align="center" >
                 <Grid  spacing="xl"  columns={24}>
                     <Grid.Col span={{ base: 24, md: 24, lg: 12 }} align="center">
-                        <Title order={1}>Selected students to add to the program: <strong>{selectedStudents.length}</strong></Title>
+                        <Title order={3}>Selected studentsto add to the program : <strong>{selectedStudents.length}</strong></Title>
                     </Grid.Col>
                     <Grid.Col span={{ base: 24, md: 12, lg: 6 }} align="center" >
                         <TextInput
@@ -94,24 +101,19 @@ export  default  function  AddStudents () {
                             disabled={selectedStudents.length === 0}
                             variant="filled" 
                             color="violet" 
-                            size="md"  
+                            size="sm"  
                         > 
                             Add Selected Students
                         </Button>
-                        <Button  color="violet" size="md"  > 
-                                <Link
-                                    to={"/students/create"}
-                                    className= "hover:text-pink-500"
-                                    >
-                                Add New Student
-                                </Link>
+                        <Button  variant="filled" color="violet" size="sm" onClick={open} > 
+                            Add New Student
                         </Button>
                         </Group>
                     </Grid.Col>
                 </Grid>
-            </Card.Section>
-            <Card.Section inheritPadding mt="sm" pb="md"> 
-                <Table.ScrollContainer minWidth={500} type="native" h={200}>
+            </Grid.Col>
+            <Grid.Col span={12 } align="center" >
+                <Table.ScrollContainer w="100%" type="native" h={200}>
                     <Table striped highlightOnHover withTableBorder    stickyHeader  >
                         <Table.Thead>
                         <Table.Tr bg='gray'>
@@ -124,7 +126,8 @@ export  default  function  AddStudents () {
                         <Table.Tbody>{studentsList()}</Table.Tbody>
                     </Table>
                 </Table.ScrollContainer>
-            </Card.Section>
-        </Card>
+            </Grid.Col>
+        </Grid>
+        </>
     );
 }

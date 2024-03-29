@@ -15,6 +15,8 @@ router.post('/', studentsController.createStudent);
 // PATCH/update a student by ID
 router.patch('/:id', studentsController.updateStudent);
 
+router.patch('/:id/removeProgramFromStudent/', studentsController.removeProgramFromStudent);
+
 // DELETE a student by ID
 router.delete('/:id', studentsController.deleteStudent);
 

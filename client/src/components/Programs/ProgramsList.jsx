@@ -4,7 +4,7 @@ import { Card, Title, Grid, Table, TextInput, Button, Modal, Center } from '@man
 import { useDisclosure} from '@mantine/hooks';
 import ProgramForm from './ProgramForm';
 
-export default function ProgramsList({programs, headerInfo, buttonLink, deleteFun}) {
+export default function ProgramsList({programs, headerInfo, tableMaxHeight,buttonInfo, deleteFun}) {
   
   const [query, setQuery] = useState('');
   const [opened, { open, close }] = useDisclosure(false);
@@ -27,9 +27,10 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
       return filterPrograms.map((program) => {
         return (
           <Program
+            key={program._id}
             program={program}
             deleteFun={deleteFun}
-            key={program._id}
+            buttonInfo= {buttonInfo}
           />
         );
       });
@@ -44,10 +45,11 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
         <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
             <Card.Section inheritPadding mt="sm" pb="md">
                 <Grid  spacing="xl"  columns={24}>
-                    <Grid.Col span={{ base: 24, md: 8, lg: 12 }} >
+                    <Grid.Col span={buttonInfo==="Delete"? { base: 24, md: 8, lg: 12} : { base:24, md: 12, lg: 18}} >
                         <Title order={1}>{headerInfo}</Title>
                     </Grid.Col>
-                    <Grid.Col span={{ base: 12, md: 8, lg: 6 }} >
+                    { buttonInfo &&  
+                    <Grid.Col span={buttonInfo==="Delete"? { base: 12, md: 8, lg: 6} :  { base:24, md: 12, lg: 6}} >
                         <TextInput
                             radius="xl"
                             size="md"
@@ -56,16 +58,17 @@ export default function ProgramsList({programs, headerInfo, buttonLink, deleteFu
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                         />
-                    </Grid.Col>
+                    </Grid.Col>}
+                    { buttonInfo==="Delete" && 
                     <Grid.Col span={{ base: 12, md: 8, lg: 6 }} align='end' >
                         <Button variant="filled" color="violet" size="md" onClick={open}>
                           Add New Program
                         </Button>
-                    </Grid.Col>
+                    </Grid.Col>}
                 </Grid>
             </Card.Section>
             <Card.Section inheritPadding mt="sm" pb="md"> 
-                <Table.ScrollContainer minWidth={500} type="native" h={200}>
+                <Table.ScrollContainer minWidth={500} type="native" h="auto" mah={tableMaxHeight}>
                     <Table striped highlightOnHover withTableBorder    stickyHeader  >
                         <Table.Thead>
                         <Table.Tr bg='gray'>

@@ -7,14 +7,14 @@ export default function EditCourse({course}) {
     const courseStats = useMemo(() => {
         if(!course?.grades) return {};
 
-        const avgGrade = course.grades.reduce((acc, grade) => acc + grade.grade, 0) / course.grades.length || 0;
-        // const avgGradeRounded = Math.round(avgGrade * 100) / 100;
-        // const avgGradeString = avgGradeRounded.toString();
-        // const avgGrade = avgGradeString.length > 3 ? avgGradeString.slice(0, 4) : avgGradeString;
+        const avgG = course.grades.reduce((acc, grade) => acc + grade.grade, 0) / course.grades.length || 0;
+        const avgGradeRounded = Math.round(avgG * 100) / 100;
+        const avgGradeString = avgGradeRounded.toString();
+        const avgGrade = avgGradeString.length > 3 ? avgGradeString.slice(0, 5) : avgGradeString;
         const highestGrade = Math.max(...course.grades.map(grade => grade.grade)) ;
         const lowestGrade = Math.min(...course.grades.map(grade => grade.grade)) ;
-        const highestGradeStudent = course.grades.find(grade => grade.grade === highestGrade)?.student.first_name || "N/A";
-        const lowestGradeStudent = course.grades.find(grade => grade.grade === lowestGrade)?.student.first_name || "N/A";
+        const highestGradeStudent = course.grades.find(grade => grade.grade === highestGrade)?.student.last_name || "N/A";
+        const lowestGradeStudent = course.grades.find(grade => grade.grade === lowestGrade)?.student.last_name || "N/A";
         return {
             numberOfStudents: course.grades.length,
             averageGrade: avgGrade,
@@ -23,7 +23,7 @@ export default function EditCourse({course}) {
             highestGradeStudent: highestGradeStudent,
             lowestGradeStudent: lowestGradeStudent
         }
-    }, [course?.grades]);
+    }, [course]);
 
     return (
       <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
@@ -34,8 +34,7 @@ export default function EditCourse({course}) {
                 <Grid  spacing="xl"  columns={24}>
                     <Grid.Col span={{ base: 24, md: 8, lg: 6 }} >
                         <Box p="lg" >
-                                <Title order={2}>Course Statistics</Title>
-                        
+                                <Title order={2}>Course Statistics</Title>                 
                                 <Text fw={500} mt="lg">
                                     Number of students:  &emsp;<strong>{courseStats.numberOfStudents} </strong>
                                 </Text>

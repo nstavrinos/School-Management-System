@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import Grade from './GradeListItem';
 import { Card, Title, Grid,  Table, TextInput } from '@mantine/core';
 
-export default function GradesList2({ grades, mode }) {
+export default function GradesList2({ grades, mode, tableMaxHeight }) {
 
     const [query, setQuery] = useState('');
     const headerInfo = (mode === "student" ) ? "Student Grades" : "Course Grades" ;
@@ -25,6 +25,7 @@ export default function GradesList2({ grades, mode }) {
 
 
       return filteredGradesByStudentName?.map((grade) => {
+        
         return (
           <Grade
             grade={grade}
@@ -55,7 +56,7 @@ export default function GradesList2({ grades, mode }) {
                 </Grid>
             </Card.Section>
             <Card.Section inheritPadding mt="sm" pb="md"> 
-                <Table.ScrollContainer minWidth={500} type="native" h={200}>
+                <Table.ScrollContainer minWidth={500} type="native"  h="auto" mah={tableMaxHeight}>
                     <Table striped highlightOnHover withTableBorder    stickyHeader  >
                         <Table.Thead>
                         <Table.Tr bg='gray'>

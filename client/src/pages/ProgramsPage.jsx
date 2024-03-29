@@ -20,7 +20,7 @@ function ProgramsPage () {
     }
 
     return (
-        <ProgramsList programs={programs} headerInfo="Programs" buttonLink={"/programs/create"} deleteFun={deleteFun} />
+        <ProgramsList programs={programs} headerInfo="Programs" tableMaxHeight="630" enableAddCourse={true} buttonInfo="Delete" deleteFun={deleteFun} />
     );
 };
 

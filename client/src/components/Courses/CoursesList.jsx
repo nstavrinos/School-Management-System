@@ -5,7 +5,7 @@ import { useDisclosure } from '@mantine/hooks';
 import CourseForm from './CourseForm';
 
 
-export  default  function  CoursesList ({courses, headerInfo , buttonLink, buttonInfo ,deleteFun}) {
+export  default  function  CoursesList ({courses, headerInfo ,enableAddCourse ,tableMaxHeight, buttonInfo ,deleteFun}) {
 
   const [query, setQuery] = useState('');
   const [opened, { open, close }] = useDisclosure(false);
@@ -45,10 +45,10 @@ export  default  function  CoursesList ({courses, headerInfo , buttonLink, butto
         <Card shadow="sm" padding="lg" radius="md" withBorder  m="lg">
             <Card.Section inheritPadding mt="sm" pb="md">
                 <Grid  spacing="xl"  columns={24}>
-                    <Grid.Col span={{ base: 24, md: 8, lg: 12 }} >
+                    <Grid.Col span={enableAddCourse? { base: 24, md: 8, lg: 12 }: { base: 24, md:12, lg: 18 } } >
                         <Title order={1}>{headerInfo}</Title>
                     </Grid.Col>
-                    <Grid.Col span={{ base: 12, md: 8, lg: 6 }} >
+                    <Grid.Col span={enableAddCourse? { base: 12, md: 8, lg: 6 }:  { base: 24, md: 12, lg: 6}} >
                         <TextInput
                             radius="xl"
                             size="md"
@@ -58,7 +58,7 @@ export  default  function  CoursesList ({courses, headerInfo , buttonLink, butto
                             onChange={(e) => setQuery(e.target.value)}
                         />
                     </Grid.Col>
-                    {buttonLink && <Grid.Col span={{ base: 12, md: 8, lg: 6 }} align='end' >
+                    {enableAddCourse && <Grid.Col span={{ base: 12, md: 8, lg: 6 }} align='end' >
                         <Button variant="filled" color="violet" size="md" onClick={open}> 
                             Add New Course
                         </Button>
@@ -66,7 +66,7 @@ export  default  function  CoursesList ({courses, headerInfo , buttonLink, butto
                 </Grid>
             </Card.Section>
             <Card.Section inheritPadding mt="sm" pb="md"> 
-                <Table.ScrollContainer minWidth={500} type="native" h={200}>
+                <Table.ScrollContainer minWidth={500} type="native" h="auto" mah={tableMaxHeight}>
                     <Table striped highlightOnHover withTableBorder    stickyHeader  >
                         <Table.Thead>
                         <Table.Tr bg='gray'>
