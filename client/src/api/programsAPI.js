@@ -34,6 +34,8 @@ export function useAddCourseToProgram() {
             console.log(data);
             // setting the program data in the query cache 
             queryClient.setQueryData(["programs", id], (oldData) => ({...oldData, ...data}));
+            // invalidating the programs data in the query cache
+            queryClient.invalidateQueries({queryKey: ["programs"],exact: true});
             // invalidating the new course data in the query cache
             queryClient.invalidateQueries({queryKey: ["courses", data.courses.at(-1)._id],exact: true});
             //setting the courses data in the query cache with the last course in the array which is the newly added course
@@ -77,6 +79,7 @@ export function useAddStudentsToProgram (){
         mutationFn: addStudentsToProgram,
         onSuccess: (data) => {
             queryClient.setQueryData(["programs", id], (oldData) => ({...oldData, ...data}));
+            queryClient.invalidateQueries({queryKey: ["programs"],exact: true});
             data.students.forEach(student => {
                 queryClient.invalidateQueries({queryKey: ["students",student],exact: true});
             });
@@ -126,6 +129,7 @@ export function useRemoveStudentFromProgram() {
             },
             onSuccess: (data) => {
                 queryClient.setQueryData(["programs", id], (oldData) => ({...oldData, ...data}));
+                queryClient.invalidateQueries({queryKey: ["programs"],exact: true});
                 data.courses.forEach(course => {
                     queryClient.invalidateQueries({queryKey: ["courses",course],exact: true});
                 });

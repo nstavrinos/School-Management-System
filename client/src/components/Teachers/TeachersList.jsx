@@ -63,7 +63,7 @@ export default function TeachersList({teachers, headerInfo, tableMaxHeight,modal
                             />
                         </Grid.Col>}
                         <Grid.Col span={modeCreateTeacher ? { base: 12, md: 8, lg: 6 } : { base: 12, md: 12, lg: 8 }} align='end' >
-                            <Tooltip label="Only 1 teacher per course delete remove the previous teacher to add one new" position="left" disabled={modeCreateTeacher || teachers[0] === undefined }>
+                            <Tooltip label="Only 1 teacher per course remove the previous teacher to add one new" position="left" disabled={modeCreateTeacher || teachers[0] === undefined }>
                             <Button variant="filled" color="violet" size="md" onClick={open} disabled={ !modeCreateTeacher && teachers[0] !== undefined}> 
                                 Add Teacher
                             </Button>

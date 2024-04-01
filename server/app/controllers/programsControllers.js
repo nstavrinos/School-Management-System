@@ -114,7 +114,7 @@ const addStudentsToProgram = async (req, res) => {
             }));}
 
         // join students with programs
-        await program.populate('students');
+        await program.populate(['students','courses']);
 
         // Return the updated program as a response
         res.status(200).send(program);

@@ -30,7 +30,7 @@ export default function StudentPage() {
                    <EditStudent student={getStudent.data}/>   
                 </Grid.Col>
                 <Grid.Col span={12} >
-                     <ProgramsList programs={getStudent?.data?.programs} headerInfo="Student Programs" buttonInfo='Remove' tableMaxHeight="100"deleteFun={programRemoveFun}/>
+                     <ProgramsList programs={getStudent?.data?.programs} headerInfo="Student Programs" buttonInfo='Remove' tableMaxHeight="300"deleteFun={programRemoveFun}/>
                 </Grid.Col>
                 <Grid.Col span={12} >
                     <GradesList grades={getStudent?.data?.grades} mode="student" tableMaxHeight="300" />

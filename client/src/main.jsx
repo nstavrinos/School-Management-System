@@ -91,7 +91,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             pauseOnHover
             theme="dark"/>
       </MantineProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+    { /*  <ReactQueryDevtools initialIsOpen={false} />*/}
     </QueryClientProvider>
   </React.StrictMode>,
 )
