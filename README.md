@@ -14,6 +14,8 @@ TanStack React Query and the UI is created with Mantime which provides fully fea
 The server-side of the application is a RESTful API that handles the logic and data management. It is responsible for processing requests from the client, 
 performing necessary operations on the database, and returning the requested data. It ensures data integrity, security, and efficient communication between the client and the server.
 
+https://github.com/nstavrinos/School-Management-System/assets/57294159/be4ac7c8-2cc1-45cc-a8ce-1338dc47b4a5
+
 
 ## Table of Contents
 
@@ -24,7 +26,7 @@ performing necessary operations on the database, and returning the requested dat
 
 ## Installation
 
-Instructions on how to install and set up your project for running  localy.
+Instructions on how to install and set up your project for running locally.
 
 - Clone the project
 
