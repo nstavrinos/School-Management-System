@@ -1,17 +1,17 @@
 # School Management System
 
 The School Management System is a web application that aims to streamline administrative tasks in educational institutions. 
-It consists of two main components: the client-side and the server-side. It is created with the MERN STACK archisteture for learning purposes.
+It consists of two main components: the client and the server side. It is created with the MERN STACK architecture for learning purposes.
 
 ### Client
 
-The client-side of the application is responsible for providing a user-friendly interface for managing the programs, teachers, students and courses of the  institution. 
-It allows users to perform various tasks such as viewing, adding, editing and deleting records. The queries and mutations are happening and controlled with 
-TanStack React Query and the UI is created with Mantime which provides fully featured React components.
+The client side of the application is responsible for providing a user-friendly interface for managing the programs, teachers, students, and courses of the  institution. 
+It allows users to perform various tasks such as viewing, adding, editing, and deleting records. The queries and mutations are happening and controlled with 
+TanStack React Query and the UI are created with Mantime which provides fully featured React components.
 
 ### Server
 
-The server-side of the application is a RESTful API that handles the logic and data management. It is responsible for processing requests from the client, 
+The server side of the application is a RESTful API that handles the logic and data management. It is responsible for processing requests from the client, 
 performing necessary operations on the database, and returning the requested data. It ensures data integrity, security, and efficient communication between the client and the server.
 
 https://github.com/nstavrinos/School-Management-System/assets/57294159/be4ac7c8-2cc1-45cc-a8ce-1338dc47b4a5
